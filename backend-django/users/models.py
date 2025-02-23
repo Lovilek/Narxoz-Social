@@ -4,20 +4,21 @@ from django.core.validators import RegexValidator
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, login, full_name, password=None, is_organization=False):
+    def create_user(self, login, full_name, password=None, is_organization=False,role="student"):
         if not login:
             raise ValueError("Логин обязателен")
 
         user = self.model(
             login=login,
             full_name=full_name,
-            is_organization=is_organization
+            is_organization=is_organization,
+            role=role,
         )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, login, full_name, password):
+    def create_superuser(self, login, full_name, password,role="admin"):
         user = self.create_user(login, full_name, password)
         user.is_superuser = True
         user.is_staff = True

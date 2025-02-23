@@ -11,15 +11,20 @@ class UserSerializer(serializers.ModelSerializer):
 
 class RegisterSerializer(serializers.ModelSerializer):
     password = serializers.CharField(write_only=True, min_length=6)
+    role = serializers.ChoiceField(choices=User.ROLE_CHOICES)
 
     class Meta:
         model = User
-        fields = ['login', 'full_name', 'password', 'is_organization']
+        fields = ['login', 'full_name', 'password', 'is_organization','role']
 
     def validate(self, data):
         request = self.context.get("request")
         if not request.user.is_staff:
             raise serializers.ValidationError("Только администратор может регистрировать пользователей.")
+
+        if data["role"] == "teacher" and not data["login"].startswith("F"):
+            raise serializers.ValidationError(
+                "Роль 'teacher' могут получить только пользователи с логином, начинающимся на 'F'.")
         return data
 
     def create(self, validated_data):
