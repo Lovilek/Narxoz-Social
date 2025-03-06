@@ -4,13 +4,24 @@ from django.core.validators import RegexValidator
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, login, full_name, password=None, is_organization=False,role="student"):
+    def create_user(self, login, full_name,email,nickname, password=None, is_organization=False,role="student"):
         if not login:
             raise ValueError("Логин обязателен")
+
+        if not email:
+            raise ValueError("Email обязателен")
+
+        if not nickname:
+            raise ValueError("Nickname обязателен")
+
+        if not full_name:
+            raise ValueError("Fullname обязателен")
 
         user = self.model(
             login=login,
             full_name=full_name,
+            email=self.normalize_email(email),
+            nickname=nickname,
             is_organization=is_organization,
             role=role,
         )
@@ -18,8 +29,8 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, login, full_name, password,role="admin"):
-        user = self.create_user(login, full_name, password)
+    def create_superuser(self, login, full_name,email,nickname, password,role="admin"):
+        user = self.create_user(login, full_name,email,nickname, password)
         user.is_superuser = True
         user.is_staff = True
         user.save(using=self._db)
@@ -42,6 +53,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     id = models.BigAutoField(primary_key=True)
     login = models.CharField(max_length=10, unique=True, validators=[login_validator])
     full_name = models.CharField(max_length=100)
+    email = models.EmailField(unique=True)
+    nickname = models.CharField(max_length=50,unique=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="student")
     is_organization = models.BooleanField(default=False)
     avatar_path = models.CharField(max_length=255, blank=True, null=True)
@@ -57,7 +70,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = "login"
-    REQUIRED_FIELDS = ["full_name"]
+    REQUIRED_FIELDS = ["full_name","email","nickname"]
 
     def __str__(self):
         org_status = " (Organization)" if self.is_organization else ""
