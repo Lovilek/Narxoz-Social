@@ -8,7 +8,7 @@ from django.contrib.auth.hashers import check_password
 class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'login', 'full_name', 'email', 'nickname', 'role', 'is_organization', 'avatar_path']
+        fields = ['id', 'login', 'full_name', 'email', 'nickname', 'role', 'avatar_path']
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -17,7 +17,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['login', 'full_name', 'email', 'nickname', 'password', 'is_organization', 'role']
+        fields = ['login', 'full_name', 'email', 'nickname', 'password', 'role']
 
     def validate(self, data):
         request = self.context.get("request")
@@ -40,9 +40,9 @@ class RegisterSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError(
                 "Роль 'student' могут получить только пользователи с логином, начинающимся на 'S'.")
 
-        if data["is_organization"] == True and not data["login"].startswith("S"):
+        if data["role"] == "organization" and not data["login"].startswith("G"):
             raise serializers.ValidationError(
-                "Права организаций могут получать только стдуенты.")
+                "Роль 'organization' могут получить только пользователи с логином, начинающимся на 'G'.")
         return data
 
     def create(self, validated_data):
@@ -57,8 +57,11 @@ class LoginSerializer(serializers.Serializer):
     password = serializers.CharField(write_only=True)
 
     def validate(self, data):
+        login = data["login"].upper()
+
         try:
-            user = User.objects.get(login=data["login"])
+
+            user = User.objects.get(login__iexact=login)
         except User.DoesNotExist:
             raise serializers.ValidationError("Неверный логин")
 
