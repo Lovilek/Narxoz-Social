@@ -5,7 +5,8 @@ from .models import *
 class PostImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = PostImage
-        fields = ['id', 'image_path', 'created_at', 'updated_at']
+        fields = ['id','post', 'image_path', 'created_at', 'updated_at']
+        read_only_fields = ['post']
 
 
 

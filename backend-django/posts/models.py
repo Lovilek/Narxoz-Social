@@ -10,7 +10,7 @@ class Post(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"Post by {self.author.login} at {self.created_at}"
+        return f"Post by {self.author.nickname} at {self.created_at} Post ID: {self.id}"
 
 
 class Comment(models.Model):
