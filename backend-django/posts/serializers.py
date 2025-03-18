@@ -23,10 +23,12 @@ class PostSerializer(serializers.ModelSerializer):
 
 
 class CommentSerializer(serializers.ModelSerializer):
+    author_nickname=serializers.CharField(source='author.nickname',read_only=True)
     class Meta:
         model = Comment
-        fields = ['id', 'post', 'author', 'content', 'created_at']
-        read_only_fields = ['author']
+        fields = ['id', 'post', 'author','author_nickname', 'content', 'created_at']
+        read_only_fields = ['author','author_nickname','id','created_at','post']
+
 
 class LikeSerializer(serializers.ModelSerializer):
     class Meta:
