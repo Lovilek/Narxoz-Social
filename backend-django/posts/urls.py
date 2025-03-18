@@ -11,4 +11,6 @@ urlpatterns = [
     path('image-upload/<int:post_id>/',PostImageUploadView.as_view(),name='image-upload'),#Загрузка изображения
     path('<int:post_id>/image/<int:pk>/',PostImageDetailView.as_view(),name='image-detail'), #Изменение удаление и чтение одного изображения
     path('image-list/<int:post_id>/',PostImageListView.as_view(),name='image-list'), #Все изображения к посту
+    path('<int:post_id>/comments/',CommentListCreateView.as_view(),name='comment-list-create'),#Создание комментария к посту и чтение всех комментариев поста
+    path('<int:post_id>/comments/<int:pk>/',CommentDetailDeleteView.as_view(),name='comment-detail-delete'),#Чтение одного коммента и удаление
 ]

@@ -113,3 +113,30 @@ class PostImageListView(ListAPIView):
             post=get_object_or_404(Post,id=post_id)
             return PostImage.objects.filter(post=post)
 
+
+class CommentListCreateView(ListCreateAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        post_id = self.kwargs.get('post_id')
+        post=get_object_or_404(Post,id=post_id)
+        return Comment.objects.filter(post=post).order_by('-created_at')
+
+    def perform_create(self, serializer):
+        post_id = self.kwargs.get('post_id')
+        post=get_object_or_404(Post,id=post_id)
+        serializer.save(author=self.request.user,post=post)
+
+class CommentDetailDeleteView(RetrieveDestroyAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+
+    def get_queryset(self):
+        post_id = self.kwargs.get('post_id')
+        return Comment.objects.filter(post__id=post_id)
+
+    def perform_destroy(self, instance):
+        if instance.author != self.request.user:
+            raise PermissionDenied("Вы не можете удалять чужие комментарии.")
+        instance.delete()
