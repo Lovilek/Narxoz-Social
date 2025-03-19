@@ -1,3 +1,5 @@
+from symtable import Class
+
 from django.shortcuts import render
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import *
@@ -140,3 +142,25 @@ class CommentDetailDeleteView(RetrieveDestroyAPIView):
         if instance.author != self.request.user:
             raise PermissionDenied("Вы не можете удалять чужие комментарии.")
         instance.delete()
+
+
+class LikeToggleView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, post_id):
+        post=get_object_or_404(Post,id=post_id)
+        like,created=Like.objects.get_or_create(post=post,author=self.request.user)
+        if not created:
+            like.delete()
+            return Response({"status":"unliked"},status=HTTP_200_OK)
+        return Response({"status":"ok"},status=HTTP_201_CREATED)
+
+class LikeListView(ListAPIView):
+    serializer_class = LikeSerializer
+    permission_classes = [IsAuthenticated]
+    def get_queryset(self):
+        post_id = self.kwargs.get('post_id')
+        post=get_object_or_404(Post,id=post_id)
+        return Like.objects.filter(post=post)
+
+
