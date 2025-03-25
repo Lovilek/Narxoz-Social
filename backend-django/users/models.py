@@ -4,7 +4,7 @@ from django.core.validators import RegexValidator
 
 
 class UserManager(BaseUserManager):
-    def create_user(self, login, full_name,email,nickname, password=None,role="student"):
+    def create_user(self, login, full_name,email,nickname,avatar_path=None, password=None,role="student"):
         if not login:
             raise ValueError("Логин обязателен")
 
@@ -23,13 +23,14 @@ class UserManager(BaseUserManager):
             email=self.normalize_email(email),
             nickname=nickname,
             role=role,
+            avatar_path=avatar_path,
         )
         user.set_password(password)
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, login, full_name,email,nickname, password,role="admin"):
-        user = self.create_user(login.upper(), full_name,email,nickname, password)
+    def create_superuser(self, login, full_name,email,nickname, password,avatar_path=None,role="admin"):
+        user = self.create_user(login.upper(), full_name,email,nickname, password,avatar_path)
         user.is_superuser = True
         user.is_staff = True
         user.save(using=self._db)
@@ -56,7 +57,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     email = models.EmailField(unique=True)
     nickname = models.CharField(max_length=50,unique=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="student")
-    avatar_path = models.CharField(max_length=255, blank=True, null=True)
+    avatar_path = models.ImageField(upload_to="avatars/", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
