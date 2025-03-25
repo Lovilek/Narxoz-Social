@@ -9,6 +9,13 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'login', 'full_name', 'email', 'nickname', 'role', 'avatar_path']
+        read_only_fields = ['id', 'login', 'full_name', 'email', 'role']
+
+
+class AnotherUserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'full_name', 'nickname', 'avatar_path']
 
 
 class RegisterSerializer(serializers.ModelSerializer):
@@ -17,7 +24,7 @@ class RegisterSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['login', 'full_name', 'email', 'nickname', 'password', 'role']
+        fields = ['login', 'full_name', 'email', 'nickname', 'password', 'role','avatar_path']
 
     def validate(self, data):
         request = self.context.get("request")

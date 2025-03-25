@@ -4,20 +4,27 @@ from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from jwt.utils import force_bytes
 from rest_framework import generics, status
+from rest_framework.generics import UpdateAPIView, get_object_or_404
+from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from django.contrib.auth import authenticate
 
 from backend import settings
+from posts.permissions import IsOwnerOrReadOnly
 from .models import User
-from .serializers import RegisterSerializer, LoginSerializer, UserSerializer
+from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, AnotherUserSerializer
 from rest_framework.permissions import AllowAny, IsAuthenticated,IsAdminUser
 
 class RegisterView(generics.CreateAPIView):
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
     permission_classes = [IsAdminUser]
+    parser_classes = (MultiPartParser, FormParser)
+
+
+
 
 class LoginView(APIView):
     permission_classes = [AllowAny]
@@ -46,12 +53,31 @@ class LogoutView(APIView):
         except Exception as e:
             return Response({"error": "Невалидный токен"}, status=status.HTTP_400_BAD_REQUEST)
 
+
+
 class UserProfileView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
     permission_classes = [IsAuthenticated]
 
     def get_object(self):
         return self.request.user
+
+class UserUpdateView(generics.UpdateAPIView):
+    serializer_class = UserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        return self.request.user
+
+class AnotherUserProfileView(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = AnotherUserSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_object(self):
+        user_id=self.kwargs.get("pk")
+        return get_object_or_404(User,pk=user_id)
+
 
 
 class CustomPasswordResetView(APIView):
