@@ -60,6 +60,7 @@ class User(AbstractBaseUser, PermissionsMixin):
     avatar_path = models.ImageField(upload_to="avatars/", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    friends=models.ManyToManyField("self",symmetrical=True,blank=True)
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -78,4 +79,4 @@ class User(AbstractBaseUser, PermissionsMixin):
 
 
     def __str__(self):
-        return f"{self.login} - {self.role}"
+        return f"{self.id}-{self.login} - {self.nickname}"
