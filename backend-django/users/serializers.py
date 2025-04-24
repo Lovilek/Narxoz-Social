@@ -11,6 +11,11 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'login', 'full_name', 'email', 'nickname', 'role', 'avatar_path']
         read_only_fields = ['id', 'login', 'full_name', 'email', 'role']
 
+class OrganizationSerializer(serializers.ModelSerializer):
+    class Meta:
+        model=User
+        fields = ['id', 'full_name', 'nickname', 'avatar_path']
+        read_only_fields = ['id', 'full_name', 'nickname', 'avatar_path']
 
 class AnotherUserSerializer(serializers.ModelSerializer):
     class Meta:
