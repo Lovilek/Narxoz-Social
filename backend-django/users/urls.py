@@ -13,6 +13,7 @@ urlpatterns = [
     path('logout/', LogoutView.as_view(), name='logout'),
     path('password-reset/', CustomPasswordResetView.as_view(), name='password-reset'),
     path('password-reset/confirm/', CustomPasswordResetConfirmView.as_view(), name='password-reset-confirm'),
+    path('organizations/',OrganizationsListView.as_view(), name='organization-list'),
 
 
 ]

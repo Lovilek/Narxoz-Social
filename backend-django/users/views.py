@@ -14,7 +14,7 @@ from django.contrib.auth import authenticate
 from backend import settings
 from posts.permissions import IsOwnerOrReadOnly
 from .models import User
-from .serializers import RegisterSerializer, LoginSerializer, UserSerializer, AnotherUserSerializer
+from .serializers import *
 from rest_framework.permissions import AllowAny, IsAuthenticated,IsAdminUser
 
 class RegisterView(generics.CreateAPIView):
@@ -140,3 +140,10 @@ class CustomPasswordResetConfirmView(APIView):
         user.save()
 
         return Response({"message": "Пароль успешно сброшен."},status=status.HTTP_200_OK)
+
+class OrganizationsListView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        organizations=User.objects.filter(role="organization")
+        serializer=OrganizationSerializer(organizations,many=True)
+        return Response(serializer.data)

@@ -42,9 +42,13 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
+    'channels',
     'users.apps.UsersConfig',
     'posts.apps.PostsConfig',
     'friends.apps.FriendsConfig',
+    'chat.apps.ChatConfig',
+
+
 ]
 
 MIDDLEWARE = [
@@ -97,6 +101,34 @@ DATABASES = {
     }
 }
 
+MONGODB_DATABASES = {
+    "default": {
+        "name": "narxoz_social",
+        "host": "localhost",
+        "port": 27017,
+        "username": "mongoadmin",
+        "password": "mysecretpassword",
+        "tz_aware": True,
+    }
+}
+
+
+from mongoengine import connect
+import os
+
+MONGO_HOST = os.getenv("MONGO_HOST", "localhost")
+MONGO_PORT = int(os.getenv("MONGO_PORT", 27017))
+MONGO_DB   = os.getenv("MONGO_DB",   "narxoz_social_chat")
+MONGO_USER = os.getenv("MONGO_USER", "mongoadmin")
+MONGO_PASS = os.getenv("MONGO_PASS", "mysecretpassword")
+
+MONGO_URI = f"mongodb://{MONGO_USER}:{MONGO_PASS}@{MONGO_HOST}:{MONGO_PORT}/{MONGO_DB}?authSource=admin"
+
+connect(
+    db   = MONGO_DB,
+    host = MONGO_URI,
+)
+
 
 # Password validation
 # https://docs.djangoproject.com/en/5.1/ref/settings/#auth-password-validators
@@ -122,6 +154,8 @@ REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
     ),
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.LimitOffsetPagination",
+    "PAGE_SIZE": 10,
 }
 SIMPLE_JWT = {
     'ACCESS_TOKEN_LIFETIME': timedelta(hours=1),
@@ -173,3 +207,24 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'wingeddemon2274@gmail.com'
 EMAIL_HOST_PASSWORD = 'bmvt syhr coal pent'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+
+
+
+ASGI_APPLICATION = "backend.asgi.application"
+
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("localhost", 6379)],
+        },
+    },
+}
+
+LOGGING = {
+    "version": 1,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "loggers": {
+        "django.channels.server": {"handlers": ["console"], "level": "DEBUG"},
+    },
+}

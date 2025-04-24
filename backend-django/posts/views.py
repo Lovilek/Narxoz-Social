@@ -24,9 +24,12 @@ class PostCreateView(CreateAPIView):
         serializer.save(author=self.request.user)
 
 class PostListView(ListAPIView):
-    queryset = Post.objects.all().order_by('-created_at')
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
+    def get_queryset(self):
+        friends=self.request.user.friends.all()
+        return Post.objects.filter(author__in=friends).order_by('-created_at')
+
 
 class UserPostListView(ListAPIView):
     serializer_class = PostSerializer
