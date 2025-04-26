@@ -4,23 +4,43 @@ from .models import User
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
 
-
-class UserSerializer(serializers.ModelSerializer):
+class FriendShortSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
-        fields = ['id', 'login', 'full_name', 'email', 'nickname', 'role', 'avatar_path']
-        read_only_fields = ['id', 'login', 'full_name', 'email', 'role']
+        fields = ['id', 'nickname']
+
+class UserSerializer(serializers.ModelSerializer):
+    friends = serializers.SerializerMethodField()
+    class Meta:
+        model = User
+        fields = ['id', 'login', 'full_name', 'email', 'nickname', 'role','friends', 'avatar_path']
+        read_only_fields = ['id', 'login', 'full_name', 'email', 'role','friends']
+
+    def get_friends(self, obj):
+        friends = obj.friends.all()
+        return FriendShortSerializer(friends, many=True).data
+
+
 
 class OrganizationSerializer(serializers.ModelSerializer):
+
     class Meta:
         model=User
         fields = ['id', 'full_name', 'nickname', 'avatar_path']
         read_only_fields = ['id', 'full_name', 'nickname', 'avatar_path']
 
+
 class AnotherUserSerializer(serializers.ModelSerializer):
+    friends = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ['id', 'full_name', 'nickname', 'avatar_path']
+        fields = ['id', 'full_name', 'nickname', 'avatar_path','friends']
+
+    def get_friends(self, obj):
+        friends = obj.friends.all()
+        return FriendShortSerializer(friends, many=True).data
+
 
 
 class RegisterSerializer(serializers.ModelSerializer):

@@ -101,7 +101,7 @@ class CustomPasswordResetView(APIView):
         token=default_token_generator.make_token(user)
 
         # reset_url=request.build_absolute_uri(f"/reset/{uid}/{token}")
-        reset_url = f"http://localhost:3000/reset-password/{uid}/{token}"
+        reset_url = f"http://localhost:5173/reset-password/{uid}/{token}"
 
         send_mail(
             subject="Сброс пароля Narxoz Social",

@@ -20,6 +20,9 @@ class PostCreateView(CreateAPIView):
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated]
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
@@ -29,6 +32,9 @@ class PostListView(ListAPIView):
     def get_queryset(self):
         friends=self.request.user.friends.all()
         return Post.objects.filter(author__in=friends).order_by('-created_at')
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
 
 class UserPostListView(ListAPIView):
@@ -42,10 +48,16 @@ class UserPostListView(ListAPIView):
 
         return Post.objects.filter(author=self.request.user).order_by('-created_at')
 
+    def get_serializer_context(self):
+        return {'request': self.request}
+
 class PostDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
     permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+
+    def get_serializer_context(self):
+        return {'request': self.request}
 
 
 class PostImageUploadView(APIView):
