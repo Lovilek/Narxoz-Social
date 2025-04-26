@@ -13,13 +13,27 @@ class PostImageSerializer(serializers.ModelSerializer):
 class PostSerializer(serializers.ModelSerializer):
     images=PostImageSerializer(many=True,read_only=True)
     author = serializers.SerializerMethodField()
+    author_id=serializers.SerializerMethodField()
+    author_avatar_path=serializers.SerializerMethodField()
     class Meta:
         model = Post
-        fields = ['id', 'content', 'author','images', 'created_at', 'updated_at']
+        fields = ['id', 'content', 'author','author_id','author_avatar_path','images', 'created_at', 'updated_at']
         read_only_fields = ['author']
 
     def get_author(self, obj):
         return obj.author.nickname
+
+    def get_author_id(self, obj):
+        return obj.author.id
+
+    def get_author_avatar_path(self, obj):
+        request = self.context.get('request')
+        if obj.author.avatar_path:
+            if request:
+                return request.build_absolute_uri(obj.author.avatar_path.url)
+            else:
+                return obj.author.avatar_path.url
+        return None
 
 
 class CommentSerializer(serializers.ModelSerializer):
