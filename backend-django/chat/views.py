@@ -24,7 +24,7 @@ class AllChatsListAPIView(APIView):
 
     def get(self, request):
         chats = Chat.objects(members=request.user.id)
-        serializer=ChatShortSerializer(chats, many=True)
+        serializer=ChatShortSerializer(chats, many=True,context={"request": request})
         return Response(serializer.data)
 
 
@@ -32,7 +32,7 @@ class DirectListAPIView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
         chats = Chat.objects(members=request.user.id,type='direct')
-        serializer=ChatShortSerializer(chats, many=True)
+        serializer=ChatShortSerializer(chats, many=True,context={"request": request})
         return Response(serializer.data)
 
 
@@ -40,7 +40,7 @@ class GroupListAPIView(APIView):
     permission_classes = [IsAuthenticated]
     def get(self, request):
         chats = Chat.objects(members=request.user.id,type='group')
-        serializer=ChatShortSerializer(chats, many=True)
+        serializer=ChatShortSerializer(chats, many=True,context={"request": request})
         return Response(serializer.data)
 
 
@@ -234,7 +234,7 @@ class ChatDetailAPIView(APIView):
         if request.user.id not in chat.members:
             return Response({"error":"Вы не участник чата"},status=403)
 
-        serializer = ChatDetailSerializer(chat)
+        serializer = ChatDetailSerializer(chat,context={"request": request})
         return Response(serializer.data,status=200)
 
 
@@ -356,3 +356,20 @@ class DirectChatView(APIView):
         )
         chat.save()
         return Response({"chat_id": str(chat.id)},status=201)
+
+
+
+class ChatMarkReadAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, chat_id):
+        chat=Chat.objects(id=ObjectId(chat_id)).first()
+        if not chat or request.user.id not in chat.members:
+            return Response({"error":"Не найдено"},status=404)
+
+        chat.unread_counters[str(request.user.id)] =0
+        chat.save()
+
+        Message.objects(chat=chat,read_by__ne=request.user.id).update(add_to_set__read_by=request.user.id)
+
+        return Response({"status":"okay"},status=200)

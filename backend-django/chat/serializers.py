@@ -15,8 +15,17 @@ class ChatShortSerializer(serializers.Serializer):
     type=serializers.CharField()
     name=serializers.CharField(allow_null=True, required=False)
     last_message=serializers.SerializerMethodField()
-    unread=serializers.IntegerField(default=0)
+    unread=serializers.SerializerMethodField()
     avatar_url=serializers.SerializerMethodField()
+    members=serializers.ListField(child=serializers.IntegerField())
+
+
+    def get_unread(self,chat: Chat):
+        request=self.context.get('request')
+        if not request:
+            return 0
+        return chat.unread_counters.get(str(request.user.id), 0)
+
 
     def get_last_message(self, chat: Chat):
         message=Message.objects.filter(chat=chat).order_by('-created_at').first()
@@ -29,17 +38,19 @@ class ChatShortSerializer(serializers.Serializer):
         return None
 
     def get_avatar_url(self, chat: Chat):
-        request = self.context.get('request')
-        if chat.type == 'group':
-            return chat.avatar_url
+        request = self.context.get("request")
 
-        if chat.type == 'direct' and request:
-            current_user_id=request.user.id
-            other_user=[uid for uid in chat.members if uid!=current_user_id]
-            if other_user:
-                other_user=User.objects.get(id=other_user[0]).first()
-                if other_user and other_user.avatar_url:
-                    return other_user.avatar_url
+        if chat.type == "group" and chat.avatar_url:
+            return request.build_absolute_uri(chat.avatar_url) if request else chat.avatar_url
+
+        if chat.type == "direct" and request:
+            me = request.user.id
+            other_id = next((uid for uid in chat.members if uid != me), None)
+            if other_id:
+                other = User.objects.filter(id=other_id).first()
+                if other and other.avatar_path:
+                    url = other.avatar_path.url
+                    return request.build_absolute_uri(url)
         return None
 
 
@@ -62,7 +73,13 @@ class ChatDetailSerializer(serializers.Serializer):
     owner_id=serializers.IntegerField()
     members=serializers.ListField(child=serializers.IntegerField())
     avatar_url=serializers.CharField(allow_null=True)
+    unread=serializers.SerializerMethodField()
     created_at=serializers.DateTimeField()
+    def get_unread(self,chat: Chat):
+        request=self.context.get('request')
+        if not request:
+            return 0
+        return chat.unread_counters.get(str(request.user.id), 0)
 
 
 class MessageSerializer(serializers.Serializer):

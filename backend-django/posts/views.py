@@ -168,7 +168,7 @@ class LikeToggleView(APIView):
         if not created:
             like.delete()
             return Response({"status":"unliked"},status=HTTP_200_OK)
-        return Response({"status":"ok"},status=HTTP_201_CREATED)
+        return Response({"status":"liked"},status=HTTP_201_CREATED)
 
 class LikeListView(ListAPIView):
     serializer_class = LikeSerializer

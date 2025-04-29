@@ -17,4 +17,5 @@ urlpatterns = [
     path("<str:chat_id>/message/<str:message_id>/delete/",DeleteMessageAPIView.as_view(),name="delete-message"),
     path("<str:chat_id>/message/<str:message_id>/edit/", EditMessageAPIView.as_view(), name="edit-message"),
     path("direct/<int:user_id>/",DirectChatView.as_view(),name="direct"),
+    path("<str:chat_id>/read/",ChatMarkReadAPIView.as_view(),name="chat-read"),
 ]

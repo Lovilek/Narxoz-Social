@@ -20,10 +20,20 @@ class ChatConsumer(AsyncWebsocketConsumer):
     @database_sync_to_async
     def _save_message(self, chat_id: str, sender_id: int, text: str) -> Message:
         chat = Chat.objects.get(id=ObjectId(chat_id))
-        msg = Message(chat=chat, sender=sender_id, text=text, created_at=datetime.utcnow())
+        if chat.unread_counters is None:
+            chat.unread_counters = {}
+        msg = Message(chat=chat, sender=sender_id, text=text, created_at=datetime.utcnow(),read_by=[sender_id])
         msg.save()
-        print(">>> SAVED", msg.id)
+
+        for uid in chat.members:
+            if uid == sender_id:
+                continue
+            chat.unread_counters[str(uid)] =chat.unread_counters.get(str(uid), 0) + 1
+
+        chat.save()
+
         return msg
+
 
 
     async def connect(self):

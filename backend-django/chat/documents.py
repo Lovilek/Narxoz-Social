@@ -12,6 +12,8 @@ class Chat(me.Document):
     created_at=me.DateTimeField(default=datetime.utcnow)
     avatar_url=me.StringField()
 
+    unread_counters=me.MapField(field=me.IntField(),default=dict)
+
     meta={
         "indexes": ["members", "owner_id"]
     }
@@ -48,3 +50,4 @@ class Message(me.Document):
     sender=me.IntField(required=True)
     text=me.StringField()
     created_at=me.DateTimeField()
+    read_by=me.ListField(me.IntField(),default=list)
