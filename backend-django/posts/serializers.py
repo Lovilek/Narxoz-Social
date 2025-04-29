@@ -15,10 +15,20 @@ class PostSerializer(serializers.ModelSerializer):
     author = serializers.SerializerMethodField()
     author_id=serializers.SerializerMethodField()
     author_avatar_path=serializers.SerializerMethodField()
+    likes=serializers.SerializerMethodField()
+    is_liked=serializers.SerializerMethodField()
+
     class Meta:
         model = Post
-        fields = ['id', 'content', 'author','author_id','author_avatar_path','images', 'created_at', 'updated_at']
+        fields = ['id', 'content', 'author','author_id','author_avatar_path','images','likes','is_liked', 'created_at', 'updated_at',]
         read_only_fields = ['author']
+
+    def get_is_liked(self,obj):
+        request = self.context.get('request')
+        return Like.objects.filter(post=obj,author=request.user).exists()
+
+    def get_likes(self, obj):
+        return Like.objects.filter(post=obj).count()
 
     def get_author(self, obj):
         return obj.author.nickname
