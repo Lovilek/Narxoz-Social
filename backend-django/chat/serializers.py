@@ -10,15 +10,29 @@ class LastMessageSerializer(serializers.Serializer):
     created_at = serializers.DateTimeField()
 
 
+
 class ChatShortSerializer(serializers.Serializer):
     id=serializers.CharField()
     type=serializers.CharField()
-    name=serializers.CharField(allow_null=True, required=False)
+    name=serializers.SerializerMethodField()
     last_message=serializers.SerializerMethodField()
     unread=serializers.SerializerMethodField()
     avatar_url=serializers.SerializerMethodField()
     members=serializers.ListField(child=serializers.IntegerField())
 
+    def get_name(self,chat: Chat):
+        request = self.context.get("request")
+        if chat.type=="group":
+            return chat.name
+        if chat.type=="direct" and request:
+            me=request.user.id
+            other_id = next((uid for uid in chat.members if uid != me), None)
+            if other_id:
+                other=User.objects.get(id=other_id)
+                if other:
+                    return other.nickname
+
+        return None
 
     def get_unread(self,chat: Chat):
         request=self.context.get('request')
@@ -30,11 +44,20 @@ class ChatShortSerializer(serializers.Serializer):
     def get_last_message(self, chat: Chat):
         message=Message.objects.filter(chat=chat).order_by('-created_at').first()
         if message:
-            return {
+            data={
                 'text': message.text,
                 'sender': message.sender,
                 'created_at': message.created_at,
-           }
+            }
+
+            try:
+                user=User.objects.get(id=message.sender)
+                data["sender_nickname"]=user.nickname
+            except User.DoesNotExist:
+                data["sender_nickname"]=None
+
+            return data
+
         return None
 
     def get_avatar_url(self, chat: Chat):
@@ -65,16 +88,30 @@ class GroupCreateSerializer(serializers.Serializer):
         return members
 
 
-
 class ChatDetailSerializer(serializers.Serializer):
     id=serializers.CharField()
     type=serializers.CharField()
-    name=serializers.CharField(allow_null=True)
+    name=serializers.SerializerMethodField()
     owner_id=serializers.IntegerField()
     members=serializers.ListField(child=serializers.IntegerField())
     avatar_url=serializers.CharField(allow_null=True)
     unread=serializers.SerializerMethodField()
     created_at=serializers.DateTimeField()
+
+    def get_name(self,chat: Chat):
+        request = self.context.get("request")
+        if chat.type=="group":
+            return chat.name
+        if chat.type=="direct" and request:
+            me=request.user.id
+            other_id = next((uid for uid in chat.members if uid != me), None)
+            if other_id:
+                other=User.objects.get(id=other_id)
+                if other:
+                    return other.nickname
+
+        return None
+
     def get_unread(self,chat: Chat):
         request=self.context.get('request')
         if not request:
@@ -86,4 +123,8 @@ class MessageSerializer(serializers.Serializer):
     id=serializers.CharField()
     text=serializers.CharField()
     sender=serializers.IntegerField()
+    sender_nickname=serializers.SerializerMethodField()
     created_at=serializers.DateTimeField()
+
+    def get_sender_nickname(self,message: Message):
+        return User.objects.get(id=message.sender).nickname

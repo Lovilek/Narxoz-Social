@@ -3,7 +3,7 @@ from django.core.mail import send_mail
 from django.utils.encoding import force_str
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from jwt.utils import force_bytes
-from rest_framework import generics, status
+from rest_framework import generics, status,viewsets,filters
 from rest_framework.generics import UpdateAPIView, get_object_or_404
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework.response import Response
@@ -147,3 +147,5 @@ class OrganizationsListView(APIView):
         organizations=User.objects.filter(role="organization")
         serializer=OrganizationSerializer(organizations,many=True)
         return Response(serializer.data)
+
+
