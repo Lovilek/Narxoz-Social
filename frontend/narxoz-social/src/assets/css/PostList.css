@@ -1,0 +1,119 @@
+.post-card {
+  background: #D50032;
+  border-radius: 12px;
+  padding: 16px;
+  margin-bottom: 20px;
+  box-shadow: 0 0 6px rgba(0, 0, 0, 0.05);
+}
+
+.post-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.post-author-block {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.post-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.post-more {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.post-author {
+  font-weight: bold;
+  font-size: 16px;
+  text-decoration: none;
+  color: black;
+}
+
+.post-time {
+  font-size: 13px;
+  color: #888;
+}
+
+.post-body {
+  margin-bottom: 12px;
+}
+
+.post-content {
+  font-size: 16px;
+  margin-bottom: 12px;
+}
+
+.post-images.single img {
+  width: 100%;
+  border-radius: 10px;
+}
+
+.post-images.multi {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.post-images.multi img {
+  width: calc(50% - 4px);
+  border-radius: 10px;
+}
+
+.like-comment-row {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.comment-icon-block {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+}
+
+.comment-icon-block img {
+  width: 20px;
+  height: 20px;
+}
+.post-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 6px;
+  padding: 0 6px;
+}
+
+.post-header {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.post-user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.post-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.post-more-btn {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
