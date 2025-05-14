@@ -11,4 +11,5 @@ urlpatterns=[
     path("incoming/",IncomingRequestsView.as_view(),name="incoming-requests"),
     path("outgoing/",OutgoingRequestsView.as_view(),name="outgoing-requests"),
     path("status/<int:user_id>/",FriendshipStatusView.as_view(),name="friendship-status"),
+    path("declined/",DeclinedRequestsView.as_view(),name="declined-requests"),
 ]
