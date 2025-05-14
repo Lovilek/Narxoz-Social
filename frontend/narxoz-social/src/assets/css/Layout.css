@@ -1,0 +1,133 @@
+/* Общая обёртка */
+.layout {
+    display: flex;
+    height: 100vh;
+    width: 100vw;
+    padding: 20px;
+    box-sizing: border-box;
+    background-color: #ffffff;
+    gap: 20px;
+  }
+  
+  /* Левая панель */
+.sidebar {
+  width: 220px;
+  background-color: #D50032;
+  border-radius: 12px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 25px;
+  padding: 20px 0;
+  box-sizing: border-box;
+}
+
+.sidebar-logo {
+  width: 170px;
+  margin-bottom: 20px;
+  margin-left: 35px;
+}
+
+/* Контейнер под каждую иконку */
+.icon-wrapper {
+  width: 55px;
+  height: 55px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 35px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+/* Иконка */
+.icon-img {
+  width: 35px;
+  height: 35px;
+  object-fit: contain;
+}
+
+/* Активная кнопка — не меняется иконка, только фон */
+.icon-wrapper.active {
+  background-color: black;
+  color: black;
+}
+
+/* Logout внизу */
+.logout-btn {
+  margin-top: auto;
+ 
+}
+
+
+  .main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  
+  /* Верхняя панель (поиск + иконки) */
+  .topbar {
+    background-color: #D50032;
+    border-radius: 12px;
+    height: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    box-sizing: border-box;
+  }
+  
+
+  
+  /* Иконки справа в topbar */
+
+  
+  /* Основной контент по центру */
+  .page-content {
+    border: 3px #D50032 solid;
+    border-radius: 12px;
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    box-sizing: border-box;
+    color: white;
+  }
+  
+  
+  .user-panel {
+    width: 380px;
+    border-radius: 12px;
+    padding: 20px;
+    text-align: center;
+    color: white;
+    box-sizing: border-box;
+  }
+  
+  .user-avatar {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    margin-bottom: 10px;
+  }
+  
+  .user-tabs {
+    margin-top: 20px;
+  }
+  
+  .user-tabs div {
+    margin-top: 10px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+   .user-info {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  
+  

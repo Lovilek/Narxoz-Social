@@ -1,0 +1,76 @@
+/* .modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.35);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 50;
+  }
+  
+  .modal-box {
+    background: white;
+    border-radius: 16px;
+    padding: 24px;
+    width: 100%;
+    max-width: 480px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+  }
+  
+  .modal-title {
+    font-size: 20px;
+    font-weight: bold;
+    margin-bottom: 16px;
+  }
+  
+  input[type="text"],
+  input[type="file"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 12px;
+    border-radius: 8px;
+    border: 1px solid #ccc;
+  }
+  
+  .friends-list {
+    max-height: 200px;
+    overflow-y: auto;
+    margin-bottom: 16px;
+    padding: 4px;
+  }
+  
+  .friend-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 8px;
+  }
+  
+  .friend-avatar {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .submit-btn {
+    background: #2563eb;
+    color: white;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    margin-right: 10px;
+  }
+  
+  .cancel-btn {
+    background: #e2e8f0;
+    padding: 10px 18px;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+  }
+   */

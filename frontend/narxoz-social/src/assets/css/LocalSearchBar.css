@@ -1,0 +1,8 @@
+.lsb-box  { position:relative;width:100%;margin:12px 0;}
+.lsb-input{ width:100%;padding:6px 10px;border-radius:6px;border:none;}
+.lsb-dd   { position:absolute;left:0;right:0;top:38px;background:#fff;
+            border-radius:6px;box-shadow:0 4px 12px rgba(0,0,0,.12);
+            z-index:30;max-height:300px;overflow:auto;}
+.lsb-item { padding:6px 10px;cursor:pointer;}
+.lsb-item:hover{background:#f2f2f2;}
+.lsb-loading,.lsb-empty{padding:10px;text-align:center;color:#777;}
