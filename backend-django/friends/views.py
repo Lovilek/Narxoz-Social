@@ -1,3 +1,4 @@
+from django.db import transaction
 from django.db.models import Q
 from django.shortcuts import render
 from rest_framework import status
@@ -80,6 +81,7 @@ class CancelFriendRequestView(APIView):
 class RemoveFriendView(APIView):
     permission_classes = [IsAuthenticated]
 
+    @transaction.atomic
     def delete(self, request,user_id):
         friend=get_object_or_404(User,id=user_id)
         if friend==request.user:
@@ -88,6 +90,12 @@ class RemoveFriendView(APIView):
         if friend in request.user.friends.all():
             request.user.friends.remove(friend)
             friend.friends.remove(request.user)
+
+            FriendRequest.objects.filter(
+                Q(from_user=request.user,to_user=friend) |
+                Q(from_user=friend, to_user=request.user)
+            ).delete()
+
             return Response({"message":"Пользователь удален из друзей"})
 
         return Response({"error":"Этот пользователь не ваш друг"},status=403)
@@ -105,6 +113,13 @@ class IncomingRequestsView(APIView):
 
     def get(self, request):
         requests=FriendRequest.objects.filter(to_user=request.user,status="pending")
+        return Response(FriendRequestSerializer(requests,many=True).data)
+
+
+class DeclinedRequestsView(APIView):
+    permission_classes = [IsAuthenticated]
+    def get(self, request):
+        requests=FriendRequest.objects.filter(to_user=request.user,status="declined")
         return Response(FriendRequestSerializer(requests,many=True).data)
 
 
