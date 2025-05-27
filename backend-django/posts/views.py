@@ -102,7 +102,7 @@ class PostImageDetailView(RetrieveUpdateDestroyAPIView):
         image=get_object_or_404(PostImage,pk=image_id,post=post)
 
         if post.author != self.request.user:
-            raise PermissionDenied("Вы не можете удалять изображения чужих постов.")
+            return Response({"error": "Вы не можете удалять изображения чужих постов."},status=403)
 
         image.delete()
 
@@ -114,7 +114,7 @@ class PostImageDetailView(RetrieveUpdateDestroyAPIView):
         image=get_object_or_404(PostImage,pk=image_id,post=post)
 
         if post.author!= self.request.user:
-            raise PermissionDenied("Вы не можете изменять изображения чужих постов.")
+            return Response({"error": "Вы не можете изменять изображения чужих постов."},status=403)
 
         serializer.save(post=post)
 
