@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'friends.apps.FriendsConfig',
     'chat.apps.ChatConfig',
     'search.apps.SearchConfig',
+    'events.apps.EventsConfig',
 
 
 ]
@@ -176,7 +177,7 @@ SIMPLE_JWT = {
 
 LANGUAGE_CODE = 'en-us'
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = "Asia/Almaty"
 
 USE_I18N = True
 
@@ -205,6 +206,10 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
+# EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
+# EMAIL_FILE_PATH = BASE_DIR / "tmp_emails"
+
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
@@ -232,3 +237,7 @@ LOGGING = {
         "django.channels.server": {"handlers": ["console"], "level": "DEBUG"},
     },
 }
+
+CELERY_BROKER_URL = "redis://localhost:6379/0"
+CELERY_RESULT_BACKEND = "redis://localhost:6379/1"
+CELERY_TIMEZONE = TIME_ZONE
