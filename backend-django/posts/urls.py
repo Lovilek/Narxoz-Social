@@ -13,6 +13,7 @@ urlpatterns = [
     path('image-list/<int:post_id>/',PostImageListView.as_view(),name='image-list'), #Все изображения к посту
     path('<int:post_id>/comments/',CommentListCreateView.as_view(),name='comment-list-create'),#Создание комментария к посту и чтение всех комментариев поста
     path('<int:post_id>/comments/<int:pk>/',CommentDetailDeleteView.as_view(),name='comment-detail-delete'),#Чтение одного коммента и удаление
+    path('<int:post_id>/delete-comment-by-post/<int:pk>/',DeleteCommentByPostView.as_view(),name='delete-comment-by-post'), #Ответ на комментарий
     path('<int:post_id>/like/',LikeToggleView.as_view(),name='like-toggle'), #Ставит лайк, а если лайк был удаляет
     path('<int:post_id>/likes/',LikeListView.as_view(),name='like-list'),#Список лайков для поста
 ]
