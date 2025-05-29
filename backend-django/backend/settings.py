@@ -213,10 +213,11 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'wingeddemon2274@gmail.com'
-EMAIL_HOST_PASSWORD = 'bmvt syhr coal pent'
+EMAIL_HOST_USER = 'narxozsocial@gmail.com'
+EMAIL_HOST_PASSWORD = 'dfog qrii rkyw gphx'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
+#bmvt syhr coal pent
+#dfog qrii rkyw gphx
 
 
 ASGI_APPLICATION = "backend.asgi.application"

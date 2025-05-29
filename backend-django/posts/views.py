@@ -159,6 +159,32 @@ class CommentDetailDeleteView(RetrieveDestroyAPIView):
         instance.delete()
 
 
+class DeleteCommentByPostView(DestroyAPIView):
+    serializer_class = CommentSerializer
+    permission_classes = [IsAuthenticated]
+    lookup_url_kwarg = "pk"
+
+    def get_object(self):
+        post_id = self.kwargs.get('post_id')
+        comment_id= self.kwargs.get('pk')
+        post=get_object_or_404(Post,pk=post_id)
+
+        if post.author != self.request.user:
+            raise PermissionDenied("Вы не можете удалять комментарии в чужих постах.")
+
+        comment=get_object_or_404(Comment,pk=comment_id,post=post)
+        return comment
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        self.perform_destroy(instance)
+        return Response(
+            {"message": "Комментарий успешно удалён."},
+            status=200
+        )
+
+
+
 class LikeToggleView(APIView):
     permission_classes = [IsAuthenticated]
 
