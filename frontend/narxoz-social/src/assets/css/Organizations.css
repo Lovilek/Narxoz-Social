@@ -1,0 +1,47 @@
+.organizations-container {
+    padding: 20px;
+    background-color: white;
+    border-radius: 12px;
+    color: #333;
+  }
+  
+  .organizations-title {
+    font-size: 28px;
+    margin-bottom: 20px;
+    color: #d50032;
+  }
+  
+  .organizations-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  
+  .organization-card {
+    width: 240px;
+    background-color: #f9f9f9;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+  }
+  
+  .organization-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+  
+  .organization-info h3 {
+    margin: 0;
+    font-size: 18px;
+  }
+  
+  .organization-info p {
+    margin: 0;
+    color: #666;
+  }
+  

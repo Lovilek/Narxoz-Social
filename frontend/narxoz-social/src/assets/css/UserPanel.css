@@ -1,0 +1,176 @@
+/* Общий контейнер */
+.user-panel {
+  width: 380px;
+  background-color: #D50032;
+  border-radius: 12px;
+  padding: 20px;
+  color: white;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Верхний блок с аватаром и инфой */
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.user-avatar {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+  display: flex;
+  align-items: center;
+  
+}
+
+.user-text {
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  justify-content: center;
+  gap: 12px; /* раньше было 2px — убираем */
+  line-height: 1.1;
+  align-items: ce;
+}
+
+.user-name {
+  font-size: 20px;
+  font-weight: 700;
+  margin: 0;
+  line-height: 1.2;
+}
+
+.user-nick {
+  font-size: 15px;
+  color: #fff;
+  margin: 0;
+  font-weight: bolder;
+}
+
+.user-login {
+  font-size: 15px;
+  color: #ddd;
+  margin: 0;
+}
+
+.user-edit-btn {
+  margin-left: auto;
+  background: none;
+  border: none;
+  color: white;
+  font-size: 50px;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* Tabs */
+.user-tabs {
+  margin-top: 16px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+ 
+  padding-bottom: 6px;
+  font-size: 16px;
+}
+
+.tab {
+  cursor: pointer;
+  padding: 4px 6px;
+  font-weight: 500;
+  color: white;
+}
+
+.tab.active {
+  font-weight: bold;
+  border-bottom: 2px solid white;
+}
+
+.search-tab {
+  font-size: 18px;
+  cursor: pointer;
+}
+
+/* Контент табов */
+.tab-content {
+  margin-top: 20px;
+}
+
+.custom-scroll {
+  max-height: 650px;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: #fff #ffffff33;
+}
+
+.custom-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scroll::-webkit-scrollbar-thumb {
+  background-color: #fff;
+  border-radius: 3px;
+}
+
+/* Карточки друзей и организаций */
+.org-card {
+  display: flex;
+  align-items: center;
+ 
+  border-radius: 10px;
+  margin-bottom: 12px;
+  gap: 12px;
+}
+
+.org-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 2px solid white;
+}
+
+.org-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  justify-content: center;
+  gap: 2px;
+}
+
+.org-text strong {
+  font-size: 16px;
+}
+
+.org-sub {
+  font-size: 13px;
+  color: white;
+  font-weight: bolder;
+}
+
+.org-actions {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.org-actions img {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+.up-empty {
+  color: #fff;
+  font-size: 14px;
+  text-align: center;
+  margin-top: 20px;
+}

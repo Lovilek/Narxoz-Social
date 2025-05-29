@@ -1,0 +1,47 @@
+/* SearchDropdown.css */
+
+.search-dd {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 80px;
+  background: #ffffff;
+  color: #333;
+  border-radius: 12px;
+  padding: 12px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+  z-index: 20;
+  max-height: 450px;
+  overflow-y: auto;
+  font-family: 'Segoe UI', sans-serif;
+  border: 1px solid #e5e5e5;
+}
+
+.sd-title {
+  font-weight: 600;
+  font-size: 13px;
+  color: #888;
+  margin: 10px 8px 4px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.sd-item {
+  padding: 10px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.2s ease;
+  font-size: 14px;
+}
+
+.sd-item:hover {
+  background: #f9f9f9;
+}
+
+.sd-empty,
+.sd-loading {
+  padding: 14px;
+  text-align: center;
+  color: #999;
+  font-size: 14px;
+}
