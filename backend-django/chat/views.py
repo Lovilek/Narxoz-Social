@@ -1,4 +1,5 @@
 import os
+from urllib.parse import unquote
 
 from django.contrib.messages.storage import default_storage
 from django.core.files.base import ContentFile
@@ -375,3 +376,26 @@ class ChatMarkReadAPIView(APIView):
         return Response({"status":"okay"},status=200)
 
 
+
+
+
+class ChatFileUploadAPIView(APIView):
+    permission_classes = [IsAuthenticated]
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request, *args, **kwargs):
+        chat_id = request.data.get("chat_id")
+        files=request.FILES.getlist("files")
+        if not chat_id or not files:
+            return Response({"error": "chat_id и files  обязательны, как минимум один файл"}, status=400)
+
+        result=[]
+        for file_obj in files:
+            path=default_storage.save(f"chat/{chat_id}/{file_obj.name}", ContentFile(file_obj.read()))
+            raw_url=default_storage.url(path)
+            decode_url=unquote(raw_url)
+            result.append({
+                "file_url": decode_url,
+                "filename": file_obj.name
+            })
+        return Response({"files": result}, status=201)
