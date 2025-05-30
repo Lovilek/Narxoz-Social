@@ -18,11 +18,18 @@ class ChatConsumer(AsyncWebsocketConsumer):
         return Chat.objects(id=ObjectId(chat_id), members=user_id).first() is not None
 
     @database_sync_to_async
-    def _save_message(self, chat_id: str, sender_id: int, text: str) -> Message:
+    def _save_text_message(self, chat_id: str, sender_id: int, text: str) -> Message:
         chat = Chat.objects.get(id=ObjectId(chat_id))
         if chat.unread_counters is None:
             chat.unread_counters = {}
-        msg = Message(chat=chat, sender=sender_id, text=text, created_at=datetime.utcnow(),read_by=[sender_id])
+        msg = Message(
+            chat=chat,
+            sender=sender_id,
+            text=text,
+            file_url=None,
+            filename=None,
+            created_at=datetime.utcnow(),
+            read_by=[sender_id])
         msg.save()
 
         for uid in chat.members:
@@ -32,6 +39,31 @@ class ChatConsumer(AsyncWebsocketConsumer):
 
         chat.save()
 
+        return msg
+
+
+    @database_sync_to_async
+    def _save_file_message(self, chat_id: str, sender_id: int, file_url: str, filename: str) -> Message:
+        chat= Chat.objects.get(id=ObjectId(chat_id))
+        if chat.unread_counters is None:
+            chat.unread_counters = {}
+
+        msg= Message(
+            chat=chat,
+            sender=sender_id,
+            text=None,
+            file_url=file_url,
+            filename=filename,
+            created_at=datetime.utcnow(),
+            read_by=[sender_id]
+        )
+        msg.save()
+        for uid in chat.members:
+            if uid == sender_id:
+                continue
+            chat.unread_counters[str(uid)] = chat.unread_counters.get(str(uid), 0) + 1
+
+        chat.save()
         return msg
 
 
@@ -58,37 +90,55 @@ class ChatConsumer(AsyncWebsocketConsumer):
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
 
-    async def receive(self, text_data):
+    async def receive(self, text_data=None, bytes_data=None):
 
         try:
             data = json.loads(text_data)
         except json.JSONDecodeError:
             return
 
-        if data.get("type") != "send":
-            return
-
-        text = data.get("text", "").strip()
-        if not text:
-            return
-
         user = self.scope["user"]
-
-        msg = await self._save_message(self.chat_id, user.id, text)
-
-        await self.channel_layer.group_send(
-            self.room_group_name,
-            {
+        if data.get("type") == "send":
+            text = data.get("text", "").strip()
+            if not text:
+                return
+            msg = await self._save_text_message(self.chat_id, user.id, text)
+            payload={
                 "type": "chat.message",
                 "message": {
                     "id": str(msg.id),
                     "sender": user.id,
                     "text": msg.text,
+                    "file_url": None,
+                    "filename": None,
                     "created_at": msg.created_at.isoformat(),
-                },
-            },
-        )
+                }
+            }
+        elif data.get("type") == "file":
+            file_url = data.get("file_url")
+            filename = data.get("filename")
+            if not file_url or not filename:
+                return
+            msg = await self._save_file_message(self.chat_id, user.id, file_url, filename)
+            payload={
+                "type": "chat.file",
+                "message": {
+                    "id": str(msg.id),
+                    "sender": user.id,
+                    "text": None,
+                    "file_url": msg.file_url,
+                    "filename": msg.filename,
+                    "created_at": msg.created_at.isoformat(),
+                }
+            }
+        else:
+            return
+
+        await self.channel_layer.group_send(self.room_group_name, payload)
 
 
     async def chat_message(self, event):
+        await self.send(text_data=json.dumps(event["message"]))
+
+    async def chat_file(self, event):
         await self.send(text_data=json.dumps(event["message"]))

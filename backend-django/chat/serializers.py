@@ -6,9 +6,15 @@ from .documents import *
 
 class LastMessageSerializer(serializers.Serializer):
     text = serializers.CharField()
+    file_url = serializers.CharField(allow_null=True)
+    filename = serializers.CharField(allow_null=True)
     sender = serializers.IntegerField()
+    sender_nickname = serializers.SerializerMethodField()
     created_at = serializers.DateTimeField()
 
+    def get_sender_nickname(self, message: Message):
+        user = User.objects.filter(id=message.sender).first()
+        return user.nickname if user else None
 
 
 class ChatShortSerializer(serializers.Serializer):
@@ -122,9 +128,12 @@ class ChatDetailSerializer(serializers.Serializer):
 class MessageSerializer(serializers.Serializer):
     id=serializers.CharField()
     text=serializers.CharField()
+    file_url = serializers.CharField(allow_null=True)
+    filename = serializers.CharField(allow_null=True)
     sender=serializers.IntegerField()
     sender_nickname=serializers.SerializerMethodField()
     created_at=serializers.DateTimeField()
 
-    def get_sender_nickname(self,message: Message):
-        return User.objects.get(id=message.sender).nickname
+    def get_sender_nickname(self, message: Message):
+        user = User.objects.filter(id=message.sender).first()
+        return user.nickname if user else None

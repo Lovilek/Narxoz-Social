@@ -49,5 +49,10 @@ class Message(me.Document):
     chat=me.ReferenceField(Chat,reverse_delete_rule=me.CASCADE,required=True)
     sender=me.IntField(required=True)
     text=me.StringField()
+    file_url=me.StringField()
+    filename=me.StringField()
     created_at=me.DateTimeField()
     read_by=me.ListField(me.IntField(),default=list)
+    meta = {
+        "indexes": ["chat", "sender", "created_at"]
+    }
