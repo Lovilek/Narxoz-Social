@@ -16,26 +16,40 @@ from users.serializers import UserSerializer
 class SendFriendRequestView(APIView):
     permission_classes = [IsAuthenticated]
 
-    def post(self, request,user_id):
-        to_user=get_object_or_404(User,id=user_id)
-        if request.user==to_user:
-            return Response({"error":"Нельзя отправить себе запрос"},status=400)
+    def post(self, request, user_id):
+        to_user = get_object_or_404(User, id=user_id)
+        if request.user == to_user:
+            return Response({"error": "Нельзя отправить себе запрос"}, status=400)
 
         if to_user in request.user.friends.all():
-            return Response({"error":"Вы уже друзья"},status=400)
+            return Response({"error": "Вы уже друзья"}, status=400)
 
+        if FriendRequest.objects.filter(
+            (Q(from_user=request.user, to_user=to_user) |
+             Q(from_user=to_user,    to_user=request.user)),
+            status="pending"
+        ).exists():
+            return Response({"error": "Уже существует активный запрос"}, status=400)
 
-        existing_request=FriendRequest.objects.filter(
-            (Q(from_user=request.user) & Q(to_user=to_user)) |
-            (Q(from_user=to_user) & Q(to_user=request.user))
+        declined = FriendRequest.objects.filter(
+            (Q(from_user=request.user, to_user=to_user) |
+             Q(from_user=to_user,    to_user=request.user)),
+            status="declined"
         ).first()
-        if existing_request:
-            return Response({"error":"Уже существует запрос"},status=400)
 
-        friend_request=FriendRequest.objects.create(from_user=request.user,to_user=to_user,status="pending")
-        friend_request.save()
+        if declined:
+            declined.from_user = request.user
+            declined.to_user   = to_user
+            declined.status    = "pending"
+            declined.save()
+            return Response({"message": "Запрос отправлен повторно"}, status=201)
 
-        return Response({"message":"Запрос отправлен"},status=201)
+        FriendRequest.objects.create(
+            from_user=request.user,
+            to_user=to_user,
+            status="pending",
+        )
+        return Response({"message": "Запрос отправлен"}, status=201)
 
 
 class RespondFriendRequestView(APIView):
