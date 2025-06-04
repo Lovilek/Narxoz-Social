@@ -51,6 +51,7 @@ class SendFriendRequestView(APIView):
         )
         return Response({"message": "Запрос отправлен"}, status=201)
 
+
         # existing_request = FriendRequest.objects.filter(
         #     (Q(from_user=request.user) & Q(to_user=to_user)) |
         #     (Q(from_user=to_user) & Q(to_user=request.user))
