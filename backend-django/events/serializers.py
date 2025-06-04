@@ -13,8 +13,8 @@ class EventSerializer(serializers.ModelSerializer):
         read_only_fields = ('created_at', 'updated_at', 'created_by')
 
     def validate(self, data):
-        start_at = data.get('start_at') or self.instance.start_at
-        end_at = data.get('end_at') or self.instance.end_at
+        start_at = data.get('start_at') or getattr(self.instance, 'start_at', None)
+        end_at = data.get('end_at') or getattr(self.instance, 'end_at', None)
         if start_at >= end_at:
             raise serializers.ValidationError("end_at должен быть позже start_at")
         if start_at <= timezone.localtime():
@@ -49,4 +49,5 @@ class EventReminderSerializer(serializers.ModelSerializer):
     def validate_stage(self, value):
         if value not in [0, 1, 2, 3]:
             raise serializers.ValidationError("Invalid stage value")
+
         return value

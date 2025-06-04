@@ -19,5 +19,6 @@ urlpatterns = [
     path('password-reset/', CustomPasswordResetView.as_view(), name='password-reset'),
     path('password-reset/confirm/', CustomPasswordResetConfirmView.as_view(), name='password-reset-confirm'),
     path('organizations/',OrganizationsListView.as_view(), name='organization-list'),
+    path('accept-policy/', AcceptPrivacyPolicyView.as_view(), name='accept-policy'),
 
 ]

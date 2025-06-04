@@ -14,6 +14,7 @@ from django.contrib.auth import authenticate
 from backend import settings
 from posts.permissions import IsOwnerOrReadOnly
 from .models import User
+from .permissions import IsAcceptPrivacy
 from .serializers import *
 from rest_framework.permissions import AllowAny, IsAuthenticated,IsAdminUser
 
@@ -57,14 +58,14 @@ class LogoutView(APIView):
 
 class UserProfileView(generics.RetrieveAPIView):
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def get_object(self):
         return self.request.user
 
 class UserUpdateView(generics.UpdateAPIView):
     serializer_class = UserSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def get_object(self):
         return self.request.user
@@ -72,7 +73,7 @@ class UserUpdateView(generics.UpdateAPIView):
 class AnotherUserProfileView(generics.RetrieveAPIView):
     queryset = User.objects.all()
     serializer_class = AnotherUserSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def get_object(self):
         user_id=self.kwargs.get("pk")
@@ -142,10 +143,20 @@ class CustomPasswordResetConfirmView(APIView):
         return Response({"message": "Пароль успешно сброшен."},status=status.HTTP_200_OK)
 
 class OrganizationsListView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
     def get(self, request):
         organizations=User.objects.filter(role="organization")
         serializer=OrganizationSerializer(organizations,many=True)
         return Response(serializer.data)
 
 
+class AcceptPrivacyPolicyView(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request):
+        user = request.user
+        if user.is_policy_accepted:
+            return Response({"message": "Политика конфиденциальности уже принята."}, status=status.HTTP_200_OK)
+        user.is_policy_accepted = True
+        user.save(update_fields=["is_policy_accepted"])
+        return Response({"message": "Политика конфиденциальности принята."}, status=status.HTTP_200_OK)

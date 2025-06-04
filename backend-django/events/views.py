@@ -9,6 +9,7 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 
 from users.models import User
+from users.permissions import IsAcceptPrivacy
 from .models import Event, EventSubscription, EventReminder
 from .serializers import EventSerializer, EventSubscriptionSerializer, EventReminderSerializer
 from .permissions import IsEventOwnerOrModerator, IsModeratorOrAdmin
@@ -17,7 +18,7 @@ from .permissions import IsEventOwnerOrModerator, IsModeratorOrAdmin
 class EventListCreateView(ListCreateAPIView):
     queryset = Event.objects.all().select_related("created_by")
     serializer_class = EventSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def post(self, request, *args, **kwargs):
         if request.user.role not in ("teacher","organization","admin","moderator"):
@@ -30,7 +31,7 @@ class EventListCreateView(ListCreateAPIView):
 class ActiveEventListView(ListAPIView):
     queryset = Event.objects.filter(start_at__gt=timezone.localtime()).select_related("created_by")
     serializer_class = EventSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def get_queryset(self):
         return super().get_queryset().order_by("start_at")
@@ -38,7 +39,7 @@ class ActiveEventListView(ListAPIView):
 class FinishedEventListView(ListAPIView):
     queryset = Event.objects.filter(start_at__lt=timezone.localtime()).select_related("created_by")
     serializer_class = EventSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def get_queryset(self):
         return super().get_queryset().order_by("-start_at")
@@ -46,7 +47,7 @@ class FinishedEventListView(ListAPIView):
 class MyEventListView(ListAPIView):
     queryset = Event.objects.all().select_related("created_by")
     serializer_class = EventSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def get_queryset(self):
         return super().get_queryset().filter(created_by=self.request.user).order_by("-start_at")
@@ -54,7 +55,7 @@ class MyEventListView(ListAPIView):
 
 class EventListByUserView(ListAPIView):
     serializer_class = EventSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def get_queryset(self):
         user = get_object_or_404(User, id=self.kwargs["user_id"])
@@ -68,11 +69,11 @@ class EventListByUserView(ListAPIView):
 class EventDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Event.objects.all().select_related("created_by")
     serializer_class = EventSerializer
-    permission_classes = [IsAuthenticated, IsEventOwnerOrModerator]
+    permission_classes = [IsAuthenticated, IsEventOwnerOrModerator,IsAcceptPrivacy]
 
 
 class EventSubscribeView(GenericAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
     serializer_class = EventSubscriptionSerializer
 
     @transaction.atomic
@@ -95,7 +96,7 @@ class EventSubscribeView(GenericAPIView):
         return Response(self.get_serializer(sub).data, status=201)
 
 class EventUnsubscribeView(GenericAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def post(self, request, pk):
         qs = EventSubscription.objects.filter(event_id=pk, user=request.user)
@@ -106,7 +107,7 @@ class EventUnsubscribeView(GenericAPIView):
         return Response({"message":"Вы отписались от события"},status=204)
 
 class MySubscriptionListView(ListAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
     serializer_class = EventSubscriptionSerializer
 
     def get_queryset(self):
@@ -117,14 +118,14 @@ class MySubscriptionListView(ListAPIView):
         )
 
 class SubscriptionDetailView(RetrieveAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
     serializer_class = EventSubscriptionSerializer
 
     def get_object(self):
         return get_object_or_404(EventSubscription, pk=self.kwargs['pk'], user=self.request.user)
 
 class MyActiveSubscriptionListView(ListAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
     serializer_class = EventSubscriptionSerializer
 
     def get_queryset(self):
@@ -135,7 +136,7 @@ class MyActiveSubscriptionListView(ListAPIView):
         )
 
 class MyFinishedSubscriptionListView(ListAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
     serializer_class = EventSubscriptionSerializer
 
     def get_queryset(self):
@@ -149,7 +150,7 @@ class MyFinishedSubscriptionListView(ListAPIView):
 
 
 class AllRemindedListView(ListAPIView):
-    permission_classes = [IsModeratorOrAdmin]
+    permission_classes = [IsModeratorOrAdmin,IsAcceptPrivacy]
     serializer_class = EventReminderSerializer
 
     def get_queryset(self):
@@ -159,7 +160,7 @@ class AllRemindedListView(ListAPIView):
         )
 
 class SubscriptionByEventView(ListAPIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
     serializer_class = EventSubscriptionSerializer
 
     def get_queryset(self):
