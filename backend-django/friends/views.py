@@ -10,11 +10,12 @@ from rest_framework.views import APIView
 from friends.models import FriendRequest
 from friends.serializers import FriendRequestSerializer
 from users.models import User
+from users.permissions import IsAcceptPrivacy
 from users.serializers import UserSerializer
 
 
 class SendFriendRequestView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def post(self, request, user_id):
         to_user = get_object_or_404(User, id=user_id)
@@ -66,7 +67,7 @@ class SendFriendRequestView(APIView):
 
 
 class RespondFriendRequestView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def post(self, request, request_id):
         friend_request = get_object_or_404(FriendRequest, id=request_id)
@@ -94,7 +95,7 @@ class RespondFriendRequestView(APIView):
 
 
 class CancelFriendRequestView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def delete(self, request, request_id):
         friend_request = get_object_or_404(FriendRequest, id=request_id)
@@ -107,7 +108,7 @@ class CancelFriendRequestView(APIView):
 
 
 class RemoveFriendView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     @transaction.atomic
     def delete(self, request, user_id):
@@ -130,7 +131,7 @@ class RemoveFriendView(APIView):
 
 
 class FriendsListView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def get(self, request):
         friends = request.user.friends.all()
@@ -146,7 +147,7 @@ class IncomingRequestsView(APIView):
 
 
 class DeclinedRequestsView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def get(self, request):
         requests = FriendRequest.objects.filter(to_user=request.user, status="declined")
@@ -162,7 +163,7 @@ class OutgoingRequestsView(APIView):
 
 
 class FriendshipStatusView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def get(self, request, user_id):
         other_user = get_object_or_404(User, id=user_id)
