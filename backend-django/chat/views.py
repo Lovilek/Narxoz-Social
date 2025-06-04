@@ -14,6 +14,7 @@ from django.shortcuts import get_object_or_404
 
 from django.conf import settings
 from users.models import User
+from users.permissions import IsAcceptPrivacy
 from .documents import Chat, Message
 from .serializers import *
 from bson import ObjectId
@@ -21,7 +22,7 @@ from bson import ObjectId
 
 ALLOWED_ROLES=("teacher", "organization", "moderator", "admin")
 class AllChatsListAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def get(self, request):
         chats = Chat.objects(members=request.user.id)
@@ -30,7 +31,7 @@ class AllChatsListAPIView(APIView):
 
 
 class DirectListAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
     def get(self, request):
         chats = Chat.objects(members=request.user.id,type='direct')
         serializer=ChatShortSerializer(chats, many=True,context={"request": request})
@@ -38,7 +39,7 @@ class DirectListAPIView(APIView):
 
 
 class GroupListAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
     def get(self, request):
         chats = Chat.objects(members=request.user.id,type='group')
         serializer=ChatShortSerializer(chats, many=True,context={"request": request})
@@ -47,7 +48,7 @@ class GroupListAPIView(APIView):
 
 
 class GroupCreateAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
     parser_classes = [MultiPartParser, FormParser]
 
     def post(self, request):
@@ -77,7 +78,7 @@ class GroupCreateAPIView(APIView):
 
 
 class UpdateGroupAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
     parser_classes = [MultiPartParser, FormParser]
     def patch(self, request,chat_id):
         chat=Chat.objects(id=ObjectId(chat_id),type='group').first()
@@ -106,7 +107,7 @@ class UpdateGroupAPIView(APIView):
         return Response({"message":"Группа обновлена","name":chat.name,"avatar_url":chat.avatar_url},status=200)
 
 class AddUserToGroupAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def post(self, request,chat_id):
         try:
@@ -142,7 +143,7 @@ class AddUserToGroupAPIView(APIView):
 
 
 class RemoveUserFromGroupAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def post(self, request, chat_id):
         try:
@@ -179,7 +180,7 @@ class RemoveUserFromGroupAPIView(APIView):
 
 
 class LeaveGroupAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def post(self, request, chat_id):
         try:
@@ -205,7 +206,7 @@ class LeaveGroupAPIView(APIView):
 
 
 class DeleteGroupAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def delete(self, request, chat_id):
         try:
@@ -224,7 +225,7 @@ class DeleteGroupAPIView(APIView):
 
 
 class ChatDetailAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def get(self, request, chat_id):
         try:
@@ -241,7 +242,7 @@ class ChatDetailAPIView(APIView):
 
 
 class ChatMessageListAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def get(self, request, chat_id):
         try:
@@ -272,7 +273,7 @@ class ChatMessageListAPIView(APIView):
 
 
 class DeleteMessageAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def delete(self, request, chat_id, message_id):
         try:
@@ -281,7 +282,7 @@ class DeleteMessageAPIView(APIView):
             return Response({"error": "Чат не найден"}, status=404)
 
         if request.user.role not in ["moderator","admin"]:
-            return Response({"erorr":"Только модераторы и админы могут удалять сообщения"},status=403)
+            return Response({"error":"Только модераторы и админы могут удалять сообщения"},status=403)
 
         # if request.user.id not in chat.members:
         #     return Response({"error":"Вы не участник чата"},status=403)
@@ -300,7 +301,7 @@ class DeleteMessageAPIView(APIView):
 
 
 class EditMessageAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def patch(self, request, chat_id, message_id):
         try:
@@ -312,7 +313,7 @@ class EditMessageAPIView(APIView):
         #     return Response({"error": "Вы не участник чата"}, status=403)
 
         if request.user.role not in ["moderator","admin"]:
-            return Response({"erorr":"Только модераторы и админы могут редактировать сообщения"},status=403)
+            return Response({"error":"Только модераторы и админы могут редактировать сообщения"},status=403)
 
         try:
             message = Message.objects.get(id=ObjectId(message_id), chat=chat)
@@ -331,7 +332,7 @@ class EditMessageAPIView(APIView):
 
 
 class DirectChatView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
     def post(self, request, user_id):
         try:
             other_user = User.objects.get(id=user_id)
@@ -361,7 +362,7 @@ class DirectChatView(APIView):
 
 
 class ChatMarkReadAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def post(self, request, chat_id):
         chat=Chat.objects(id=ObjectId(chat_id)).first()
@@ -380,7 +381,7 @@ class ChatMarkReadAPIView(APIView):
 
 
 class ChatFileUploadAPIView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
     parser_classes = [MultiPartParser, FormParser]
 
     def post(self, request, *args, **kwargs):

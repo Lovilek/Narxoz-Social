@@ -9,6 +9,7 @@ from rest_framework.response import Response
 from rest_framework.status import *
 from rest_framework.views import APIView
 
+from users.permissions import IsAcceptPrivacy
 from .permissions import *
 from posts.models import *
 from posts.serializers import *
@@ -18,7 +19,7 @@ from users.serializers import UserSerializer
 class PostCreateView(CreateAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def get_serializer_context(self):
         return {'request': self.request}
@@ -28,7 +29,7 @@ class PostCreateView(CreateAPIView):
 
 class PostListView(ListAPIView):
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
     def get_queryset(self):
         friends=self.request.user.friends.all()
         return Post.objects.filter(author__in=friends).order_by('-created_at')
@@ -39,7 +40,7 @@ class PostListView(ListAPIView):
 
 class UserPostListView(ListAPIView):
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
     def get_queryset(self):
         user_id = self.kwargs.get('user_id')
         if user_id:
@@ -54,14 +55,14 @@ class UserPostListView(ListAPIView):
 class PostDetailView(RetrieveUpdateDestroyAPIView):
     queryset = Post.objects.all()
     serializer_class = PostSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly,IsAcceptPrivacy]
 
     def get_serializer_context(self):
         return {'request': self.request}
 
 
 class PostImageUploadView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
     parser_classes = (MultiPartParser, FormParser)
 
     def post(self, request, post_id):
@@ -86,7 +87,7 @@ class PostImageUploadView(APIView):
 
 class PostImageDetailView(RetrieveUpdateDestroyAPIView):
     serializer_class = PostImageSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
     lookup_field = 'pk'
 
     def get_queryset(self):
@@ -122,7 +123,7 @@ class PostImageDetailView(RetrieveUpdateDestroyAPIView):
 
 class PostImageListView(ListAPIView):
     serializer_class = PostImageSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def get_queryset(self):
         post_id = self.kwargs.get('post_id')
@@ -133,7 +134,7 @@ class PostImageListView(ListAPIView):
 
 class CommentListCreateView(ListCreateAPIView):
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def get_queryset(self):
         post_id = self.kwargs.get('post_id')
@@ -147,7 +148,7 @@ class CommentListCreateView(ListCreateAPIView):
 
 class CommentDetailDeleteView(RetrieveDestroyAPIView):
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly]
+    permission_classes = [IsAuthenticated, IsOwnerOrReadOnly,IsAcceptPrivacy]
 
     def get_queryset(self):
         post_id = self.kwargs.get('post_id')
@@ -161,7 +162,7 @@ class CommentDetailDeleteView(RetrieveDestroyAPIView):
 
 class DeleteCommentByPostView(DestroyAPIView):
     serializer_class = CommentSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
     lookup_url_kwarg = "pk"
 
     def get_object(self):
@@ -186,7 +187,7 @@ class DeleteCommentByPostView(DestroyAPIView):
 
 
 class LikeToggleView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def post(self, request, post_id):
         post=get_object_or_404(Post,id=post_id)
@@ -198,7 +199,7 @@ class LikeToggleView(APIView):
 
 class LikeListView(ListAPIView):
     serializer_class = LikeSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
     def get_queryset(self):
         post_id = self.kwargs.get('post_id')
         post=get_object_or_404(Post,id=post_id)

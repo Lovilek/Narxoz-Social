@@ -13,7 +13,7 @@ class UserSerializer(serializers.ModelSerializer):
     friends = serializers.SerializerMethodField()
     class Meta:
         model = User
-        fields = ['id', 'login', 'full_name', 'email', 'nickname', 'role','friends', 'avatar_path']
+        fields = ['id', 'login', 'full_name', 'email', 'nickname', 'role','friends', 'avatar_path','is_policy_accepted']
         read_only_fields = ['id', 'login', 'full_name', 'email', 'role','friends']
 
     def get_friends(self, obj):

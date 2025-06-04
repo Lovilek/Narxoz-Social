@@ -9,10 +9,12 @@ from posts.models import Post
 from search.serializers import UserSearchSerializer, ChatSearchSerializer
 from users.models import User
 from rest_framework.response import Response
+
+from users.permissions import IsAcceptPrivacy
 from .serializers import *
 
 class UserSearchView(viewsets.ReadOnlyModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
     queryset = User.objects.all()
     serializer_class = UserSearchSerializer
 
@@ -21,7 +23,7 @@ class UserSearchView(viewsets.ReadOnlyModelViewSet):
 
 
 class ChatSearchView(viewsets.ReadOnlyModelViewSet):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
     serializer_class = ChatSearchSerializer
 
     def get_queryset(self):
@@ -59,7 +61,7 @@ class ChatSearchView(viewsets.ReadOnlyModelViewSet):
 
 
 class GlobalSearchView(APIView):
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def get(self, request):
         q=request.query_params.get('q','').strip()
