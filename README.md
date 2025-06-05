@@ -25,8 +25,6 @@ pip install -r backend-django/requirements.txt
 ```bash
 cd frontend/narxoz-social
 npm install
-npm react-router-dom
-npm run dev
 ```
 
 ## Running Databases
@@ -67,5 +65,6 @@ celery -A backend worker -l INFO -Q push --pool solo --concurrency 1 -n pusher@%
 
 ```bash
 cd frontend/narxoz-social
+npm react-router-dom
 npm run dev
 ```
