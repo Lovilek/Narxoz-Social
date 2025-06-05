@@ -9,6 +9,22 @@ services:
       - 27017:27017
     volumes:
       - mongodata:/data/db
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+      POSTGRES_DB: postgres
+    ports:
+      - "5431:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+  redis:
+    image: redis:7
+    ports:
+      - "6379:6379"
 volumes:
   mongodata:
+    driver: local
+  postgres_data:
     driver: local
