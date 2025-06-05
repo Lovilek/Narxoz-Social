@@ -25,6 +25,8 @@ pip install -r backend-django/requirements.txt
 ```bash
 cd frontend/narxoz-social
 npm install
+npm react-router-dom
+npm run dev
 ```
 
 ## Running Databases
