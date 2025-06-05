@@ -53,111 +53,129 @@ class SendFriendRequestView(APIView):
         return Response({"message": "Запрос отправлен"}, status=201)
 
 
+        # existing_request = FriendRequest.objects.filter(
+        #     (Q(from_user=request.user) & Q(to_user=to_user)) |
+        #     (Q(from_user=to_user) & Q(to_user=request.user))
+        # ).first()
+        # if existing_request:
+        #     return Response({"error": "Уже существует запрос"}, status=400)
+        #
+        # friend_request = FriendRequest.objects.create(from_user=request.user, to_user=to_user, status="pending")
+        # friend_request.save()
+        #
+        # return Response({"message": "Запрос отправлен"}, status=201)
+
+
 class RespondFriendRequestView(APIView):
     permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
-    def post(self, request,request_id):
-        friend_request=get_object_or_404(FriendRequest,id=request_id)
+    def post(self, request, request_id):
+        friend_request = get_object_or_404(FriendRequest, id=request_id)
         if friend_request.to_user != request.user:
             return Response({"error": "Вы не можете управлять чужим запросом в друзья."}, status=403)
-        action=request.data.get("action")
+
+        action = request.data.get("action")
 
         if friend_request.status == "accepted":
             return Response({"error": "Запрос уже принят"}, status=400)
 
-        if action=="accept":
-            friend_request.status="accepted"
+        if action == "accept":
+            friend_request.status = "accepted"
             friend_request.save()
             request.user.friends.add(friend_request.from_user)
             friend_request.from_user.friends.add(request.user)
-            return Response({"message":"Запрос принят"})
+            return Response({"message": "Запрос принят"})
 
-        elif action=="decline":
-            friend_request.status="declined"
+        elif action == "decline":
+            friend_request.status = "declined"
             friend_request.save()
-            return Response({"message":"Запрос отклонен"})
+            return Response({"message": "Запрос отклонен"})
 
-        return Response({"error":"Неправильное значение"},status=400)
+        return Response({"error": "Неправильное значение"}, status=400)
 
 
 class CancelFriendRequestView(APIView):
     permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
-    def delete(self, request,request_id):
-        friend_request=get_object_or_404(FriendRequest,id=request_id)
-        if friend_request.from_user!=request.user:
-            return Response({"error":"Вы не можете отменить чужой запрос"},status=403)
-        if friend_request.status=="accepted":
-            return Response({"error":"Запрос уже принят"},status=400)
+    def delete(self, request, request_id):
+        friend_request = get_object_or_404(FriendRequest, id=request_id)
+        if friend_request.from_user != request.user:
+            return Response({"error": "Вы не можете отменить чужой запрос"}, status=403)
+        if friend_request.status == "accepted":
+            return Response({"error": "Запрос уже принят"}, status=400)
         friend_request.delete()
-        return Response({"message":"Запрос удален"})
+        return Response({"message": "Запрос удален"})
 
 
 class RemoveFriendView(APIView):
     permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     @transaction.atomic
-    def delete(self, request,user_id):
-        friend=get_object_or_404(User,id=user_id)
-        if friend==request.user:
-            return Response({"error":"Нельзя удалить себя"},status=400)
+    def delete(self, request, user_id):
+        friend = get_object_or_404(User, id=user_id)
+        if friend == request.user:
+            return Response({"error": "Нельзя удалить себя"}, status=400)
 
         if friend in request.user.friends.all():
             request.user.friends.remove(friend)
             friend.friends.remove(request.user)
 
             FriendRequest.objects.filter(
-                Q(from_user=request.user,to_user=friend) |
+                Q(from_user=request.user, to_user=friend) |
                 Q(from_user=friend, to_user=request.user)
             ).delete()
 
-            return Response({"message":"Пользователь удален из друзей"})
+            return Response({"message": "Пользователь удален из друзей"})
 
-        return Response({"error":"Этот пользователь не ваш друг"},status=403)
+        return Response({"error": "Этот пользователь не ваш друг"}, status=403)
+
 
 class FriendsListView(APIView):
     permission_classes = [IsAuthenticated,IsAcceptPrivacy]
-    def get(self, request):
-        friends=request.user.friends.all()
-        return Response(UserSerializer(friends,many=True).data)
 
+    def get(self, request):
+        friends = request.user.friends.all()
+        return Response(UserSerializer(friends, many=True).data)
 
 
 class IncomingRequestsView(APIView):
-    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request):
-        requests=FriendRequest.objects.filter(to_user=request.user,status="pending")
-        return Response(FriendRequestSerializer(requests,many=True).data)
+        requests = FriendRequest.objects.filter(to_user=request.user, status="pending")
+        return Response(FriendRequestSerializer(requests, many=True).data)
 
 
 class DeclinedRequestsView(APIView):
     permission_classes = [IsAuthenticated,IsAcceptPrivacy]
+
     def get(self, request):
-        requests=FriendRequest.objects.filter(to_user=request.user,status="declined")
-        return Response(FriendRequestSerializer(requests,many=True).data)
+        requests = FriendRequest.objects.filter(to_user=request.user, status="declined")
+        return Response(FriendRequestSerializer(requests, many=True).data)
 
 
 class OutgoingRequestsView(APIView):
     permission_classes = [IsAuthenticated]
+
     def get(self, request):
-        requests=FriendRequest.objects.filter(from_user=request.user,status="pending")
-        return Response(FriendRequestSerializer(requests,many=True).data)
+        requests = FriendRequest.objects.filter(from_user=request.user, status="pending")
+        return Response(FriendRequestSerializer(requests, many=True).data)
 
 
 class FriendshipStatusView(APIView):
     permission_classes = [IsAuthenticated,IsAcceptPrivacy]
-    def get(self, request,user_id):
-        other_user=get_object_or_404(User,id=user_id)
 
-        if request.user==other_user:
-            return Response({"status":"self"})
+    def get(self, request, user_id):
+        other_user = get_object_or_404(User, id=user_id)
+
+        if request.user == other_user:
+            return Response({"status": "self"})
 
         if other_user in request.user.friends.all():
-            return Response({"status":"friends"})
+            return Response({"status": "friends"})
 
-        if FriendRequest.objects.filter(from_user=request.user,to_user=other_user,status="pending").exists():
-            return Response({"status":"outgoing_request"})
+        if FriendRequest.objects.filter(from_user=request.user, to_user=other_user, status="pending").exists():
+            return Response({"status": "outgoing_request"})
 
         if FriendRequest.objects.filter(from_user=other_user, to_user=request.user, status="pending").exists():
             return Response({"status": "incoming_request"})
@@ -168,8 +186,4 @@ class FriendshipStatusView(APIView):
         if FriendRequest.objects.filter(from_user=other_user, to_user=request.user, status="declined").exists():
             return Response({"status": "incoming_declined_request"})
 
-        return Response({"status":"None"})
-
-
-
-
+        return Response({"status": "None"})
