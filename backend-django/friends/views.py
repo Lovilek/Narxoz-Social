@@ -15,7 +15,7 @@ from users.serializers import UserSerializer
 
 
 class SendFriendRequestView(APIView):
-        permission_classes = [IsAuthenticated,IsAcceptPrivacy]
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
 
     def post(self, request, user_id):
         to_user = get_object_or_404(User, id=user_id)
