@@ -55,7 +55,10 @@ python manage.py runserver
 Start Celery with the built‑in beat scheduler:
 
 ```bash
-celery -A backend worker -B -l info
+celery -A backend beat  -l INFO
+celery -A backend worker -l INFO -Q celery --pool solo  --concurrency 1 -n sched@%h
+celery -A backend worker -l INFO -Q mail --pool solo --concurrency 1 -n mailer@%h
+celery -A backend worker -l INFO -Q push --pool solo --concurrency 1 -n pusher@%h
 ```
 
 ## Running the Frontend
