@@ -9,7 +9,6 @@ class PostImageSerializer(serializers.ModelSerializer):
         read_only_fields = ['post']
 
 
-
 class PostSerializer(serializers.ModelSerializer):
     images=PostImageSerializer(many=True,read_only=True)
     author = serializers.SerializerMethodField()
@@ -44,6 +43,27 @@ class PostSerializer(serializers.ModelSerializer):
             else:
                 return obj.author.avatar_path.url
         return None
+
+
+class PostMessageSerializer(serializers.ModelSerializer):
+    images=PostImageSerializer(many=True,read_only=True)
+    author = serializers.SerializerMethodField()
+    author_id=serializers.SerializerMethodField()
+    likes=serializers.SerializerMethodField()
+
+    class Meta:
+        model = Post
+        fields = ['id', 'content', 'author','author_id','images','likes', 'created_at', 'updated_at',]
+        read_only_fields = ['author']
+
+    def get_likes(self, obj):
+        return Like.objects.filter(post=obj).count()
+
+    def get_author(self, obj):
+        return obj.author.nickname
+
+    def get_author_id(self, obj):
+        return obj.author.id
 
 
 class CommentSerializer(serializers.ModelSerializer):

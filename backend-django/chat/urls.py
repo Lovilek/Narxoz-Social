@@ -26,4 +26,5 @@ urlpatterns = [
     path("direct/<int:user_id>/",DirectChatView.as_view(),name="direct"),
     path("<str:chat_id>/read/",ChatMarkReadAPIView.as_view(),name="chat-read"),
     path("upload-file/", ChatFileUploadAPIView.as_view(), name="upload-file"),
+    path("<str:chat_id>/share/",ShareAPIView.as_view(),name="share"),
 ]

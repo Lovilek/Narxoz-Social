@@ -109,3 +109,5 @@ def send_event_push(self, sub_id: int) -> None:
     )
     create_notification(user.pk,"event_reminder",payload)
     logger.info("← send_event_push DONE for sub_id=%s → user %s", sub_id, user.pk)
+
+
