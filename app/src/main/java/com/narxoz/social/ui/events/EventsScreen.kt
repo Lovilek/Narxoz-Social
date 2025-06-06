@@ -1,0 +1,67 @@
+package com.narxoz.social.ui.events
+
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
+import java.time.LocalDateTime
+
+/* ───────── модели (MVP) ───────── */
+data class EventUi(
+    val id: Int,
+    val title: String,
+    val startsAt: LocalDateTime,
+    val description: String?
+)
+
+/* ───────── ViewModel-заглушка ───────── */
+class EventsViewModel : ViewModel() {
+    private val _items = MutableStateFlow<List<EventUi>>(emptyList())
+    val items: StateFlow<List<EventUi>> = _items
+
+    init { loadDemo() }
+
+    private fun loadDemo() = viewModelScope.launch {
+        _items.value = listOf(
+            EventUi(1, "Job Fair",  LocalDateTime.now().plusDays(1),  "Карьера и стажировки"),
+            EventUi(2, "Hackathon", LocalDateTime.now().plusDays(10), "48-часовой марафон")
+        )
+    }
+}
+
+/* ───────── UI ───────── */
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun EventsScreen(vm: EventsViewModel = androidx.lifecycle.viewmodel.compose.viewModel()) {
+    val list by vm.items.collectAsState()
+
+    Scaffold(
+        topBar = { SmallTopAppBar(title = { Text("Events") }) }
+    ) { inner ->
+        if (list.isEmpty())
+            Box(Modifier.fillMaxSize().padding(inner), contentAlignment = Alignment.Center) {
+                Text("Нет событий")
+            }
+        else
+            LazyColumn(contentPadding = PaddingValues(12.dp), modifier = Modifier.padding(inner)) {
+                items(list) { ev ->
+                    Card(Modifier.fillMaxWidth().padding(bottom = 8.dp)) {
+                        Column(Modifier.padding(12.dp)) {
+                            Text(ev.title, style = MaterialTheme.typography.titleMedium)
+                            Text(ev.startsAt.toString(), style = MaterialTheme.typography.bodySmall)
+                            if (!ev.description.isNullOrBlank())
+                                Text(ev.description!!, style = MaterialTheme.typography.bodyMedium)
+                        }
+                    }
+                }
+            }
+    }
+}
