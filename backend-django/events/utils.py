@@ -6,11 +6,11 @@ def calc_initial_stage(delta):
     Returns:
         int: The initial stage (0, 1, 2, or 3).
     """
-    if delta > timedelta(hours=3):
+    if delta >= timedelta(hours=3):
         return 0
-    elif delta > timedelta(hours=1):
+    elif delta >= timedelta(hours=1):
         return 1
-    elif delta > timedelta(minutes=20):
+    elif delta >= timedelta(minutes=20):
         return 2
     else:
         return 3
