@@ -13,6 +13,7 @@ import androidx.navigation.navArgument
 import com.narxoz.social.repository.SessionManager
 import com.narxoz.social.ui.comments.CommentsScreen
 import com.narxoz.social.ui.navigation.LocalNavController
+import com.narxoz.social.ui.likes.LikesScreen
 import com.narxoz.social.ui.orgs.OrganizationsScreen
 
 @Composable
@@ -39,6 +40,16 @@ fun AppNavigation(onToggleTheme: () -> Unit) {
             ) { backStack ->
                 val id = backStack.arguments!!.getInt("postId")
                 CommentsScreen(
+                    postId = id,
+                    onBack = { navController.popBackStack() }
+                )
+            }
+            composable(
+                "likes/{postId}",
+                arguments = listOf(navArgument("postId") { type = NavType.IntType })
+            ) { backStack ->
+                val id = backStack.arguments!!.getInt("postId")
+                LikesScreen(
                     postId = id,
                     onBack = { navController.popBackStack() }
                 )
