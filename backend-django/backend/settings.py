@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'chat.apps.ChatConfig',
     'search.apps.SearchConfig',
     'events.apps.EventsConfig',
+    'notifications.apps.NotificationsConfig',
 
 
 ]

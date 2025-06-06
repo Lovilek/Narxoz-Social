@@ -42,3 +42,4 @@ app.conf.beat_schedule = {
         "options": {"queue": "push", "routing_key": "push"},
     }
 }
+

@@ -4,6 +4,8 @@ from django.utils import timezone
 from django.core.mail import get_connection, EmailMessage
 from django.conf import settings
 from datetime import timedelta
+
+from notifications.utils import create_notification
 from .models import EventSubscription
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
@@ -105,4 +107,5 @@ def send_event_push(self, sub_id: int) -> None:
     async_to_sync(channel_layer.group_send)(
         f"user-{user.pk}", {"type": "event_reminder", "data": payload}
     )
+    create_notification(user.pk,"event_reminder",payload)
     logger.info("← send_event_push DONE for sub_id=%s → user %s", sub_id, user.pk)

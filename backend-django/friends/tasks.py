@@ -3,7 +3,7 @@ from celery.utils.log import get_task_logger
 from asgiref.sync import async_to_sync
 from channels.layers import get_channel_layer
 
-
+from notifications.utils import create_notification
 from .models import FriendRequest
 
 logger=get_task_logger(__name__)
@@ -37,4 +37,5 @@ def send_friend_request_push(self,request_id:int) -> None:
     async_to_sync(channel_layer.group_send)(
         f"user-{fr.to_user.pk}", {"type": "friend_request", "data": payload}
     )
-    logger.info("\u2192 send_friend_request_push START for request_id=%s", request_id)
+    create_notification(fr.to_user.pk,"friend_request",payload)
+    logger.info("\u2192 send_friend_request_push FINISH for request_id=%s", request_id)
