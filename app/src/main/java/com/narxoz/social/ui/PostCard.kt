@@ -1,6 +1,7 @@
 package com.narxoz.social.ui
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
@@ -96,7 +97,10 @@ fun PostCard(
                     Text(
                         text   = post.likes.toString(),
                         style  = MaterialTheme.typography.labelMedium,
-                        color  = MaterialTheme.colorScheme.onSurfaceVariant
+                        color  = MaterialTheme.colorScheme.onSurfaceVariant,
+                        modifier = Modifier.clickable {
+                            navController.navigate("likes/${post.id}")
+                        }
                     )
                 }
 
