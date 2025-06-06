@@ -12,6 +12,7 @@ from friends.serializers import FriendRequestSerializer
 from users.models import User
 from users.permissions import IsAcceptPrivacy
 from users.serializers import UserSerializer
+from .tasks import send_friend_request_push
 
 
 class SendFriendRequestView(APIView):
@@ -43,13 +44,15 @@ class SendFriendRequestView(APIView):
             declined.to_user   = to_user
             declined.status    = "pending"
             declined.save()
+            send_friend_request_push.apply_async((declined.pk,),queue="push")
             return Response({"message": "Запрос отправлен повторно"}, status=201)
 
-        FriendRequest.objects.create(
+        fr=FriendRequest.objects.create(
             from_user=request.user,
             to_user=to_user,
             status="pending",
         )
+        send_friend_request_push.apply_async((fr.pk,),queue="push")
         return Response({"message": "Запрос отправлен"}, status=201)
 
 
