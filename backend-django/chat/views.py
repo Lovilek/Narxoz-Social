@@ -1,6 +1,8 @@
 import os
 from urllib.parse import unquote
 
+from asgiref.sync import async_to_sync
+from channels.layers import get_channel_layer
 from django.contrib.messages.storage import default_storage
 from django.core.files.base import ContentFile
 from rest_framework.parsers import MultiPartParser,FormParser
@@ -13,6 +15,8 @@ from rest_framework import status, viewsets, filters
 from django.shortcuts import get_object_or_404
 
 from django.conf import settings
+
+from posts.models import Post
 from users.models import User
 from users.permissions import IsAcceptPrivacy
 from .documents import Chat, Message
@@ -253,7 +257,7 @@ class ChatMessageListAPIView(APIView):
         if request.user.id not in chat.members:
             return Response({"error":"Вы не участник чата"},status=403)
 
-        limit=int(request.query_params.get('limit',2))
+        limit=int(request.query_params.get('limit',5))
 
         before_id=request.query_params.get('before')
 
@@ -400,3 +404,76 @@ class ChatFileUploadAPIView(APIView):
                 "filename": file_obj.name
             })
         return Response({"files": result}, status=201)
+
+
+
+class ShareAPIView(APIView):
+    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
+
+    def post(self,request,chat_id):
+        chat=Chat.objects(id=ObjectId(chat_id)).first()
+        if not chat:
+            return Response({"error":"Чат не найден"},status=404)
+
+        if request.user.id not in chat.members:
+            return Response({"error":"Вы не участник чата"},status=403)
+
+        share_type=request.data.get('share_type')
+        share_id=request.data.get('share_id')
+
+        if not share_type:
+            return Response({"error":"share_type обязателен"},status=400)
+
+        if share_type not in ("message","post","profile"):
+            return Response({"error":"Неверный тип"},status=400)
+
+
+        if not share_id:
+            return Response({"error":"share_id обязателен"},status=400)
+
+        share_id_object=None
+
+        if share_type=="message":
+            try:
+                message=Message.objects.get(id=ObjectId(share_id))
+                share_id_object=MessageSerializer(message).data
+            except Exception:
+                return Response({"error":"Сообщение не найден"},status=404)
+        elif share_type=="profile":
+            try:
+                user=User.objects.get(id=int(share_id))
+                share_id_object=UserSerializer(user).data
+            except Exception:
+                return Response({"error":"Пользователь не найден"} ,status=404)
+
+        elif share_type=="post":
+            try:
+                post=Post.objects.get(id=int(share_id))
+                share_id_object=PostMessageSerializer(post).data
+            except Exception:
+                return Response({"error":"Пост не найден"},status=404)
+
+        msg=Message(
+            chat=chat,
+            sender=request.user.id,
+            text=None,
+            file_url=None,
+            filename=None,
+            share_type=share_type,
+            share_id=share_id_object,
+            created_at=datetime.utcnow(),
+            read_by=[request.user.id],
+        )
+        msg.save()
+
+        for uid in chat.members:
+            if uid==request.user.id:
+                continue
+            chat.unread_counters[str(uid)]=chat.unread_counters.get(str(uid),0)+1
+
+        chat.save()
+        data=MessageSerializer(msg).data
+        async_to_sync(get_channel_layer().group_send)(
+            f"chat_{chat_id}",{"type":"chat.message","message":data}
+        )
+        return Response(data,status=201)

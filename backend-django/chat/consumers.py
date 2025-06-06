@@ -111,6 +111,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     "text": msg.text,
                     "file_url": None,
                     "filename": None,
+                    "share_type":msg.share_type,
+                    "share_id":msg.share_id,
                     "created_at": msg.created_at.isoformat(),
                 }
             }
@@ -128,6 +130,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     "text": None,
                     "file_url": msg.file_url,
                     "filename": msg.filename,
+                    "share_type": msg.share_type,
+                    "share_id": msg.share_id,
                     "created_at": msg.created_at.isoformat(),
                 }
             }

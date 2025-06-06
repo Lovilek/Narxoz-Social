@@ -1,6 +1,10 @@
+from bson import ObjectId
 from rest_framework import serializers
 
+from posts.models import Post
+from posts.serializers import PostSerializer, PostMessageSerializer
 from users.models import User
+from users.serializers import UserSerializer
 from .documents import *
 
 
@@ -127,9 +131,11 @@ class ChatDetailSerializer(serializers.Serializer):
 
 class MessageSerializer(serializers.Serializer):
     id=serializers.CharField()
-    text=serializers.CharField()
+    text=serializers.CharField(allow_null=True)
     file_url = serializers.CharField(allow_null=True)
     filename = serializers.CharField(allow_null=True)
+    share_type=serializers.CharField(allow_null=True)
+    share_id=serializers.JSONField(allow_null=True)
     sender=serializers.IntegerField()
     sender_nickname=serializers.SerializerMethodField()
     created_at=serializers.DateTimeField()
@@ -137,3 +143,17 @@ class MessageSerializer(serializers.Serializer):
     def get_sender_nickname(self, message: Message):
         user = User.objects.filter(id=message.sender).first()
         return user.nickname if user else None
+
+    # def get_share_id(self,message:Message):
+    #     if message.share_type=="post":
+    #         post=Post.objects.filter(id=int(message.share_id)).first()
+    #         return PostMessageSerializer(post).data if post else None
+    #     elif message.share_type=="message":
+    #         message_in=Message.objects.filter(id=ObjectId(message.share_id)).first()
+    #         return MessageSerializer(message_in,).data if message_in else None
+    #     elif message.share_type=="profile":
+    #         user=User.objects.filter(id=int(message.share_id)).first()
+    #         return UserSerializer(user,).data if user else None
+    #     else:
+    #         return None
+

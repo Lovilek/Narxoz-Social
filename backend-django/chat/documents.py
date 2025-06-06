@@ -53,6 +53,8 @@ class Message(me.Document):
     filename=me.StringField()
     created_at=me.DateTimeField()
     read_by=me.ListField(me.IntField(),default=list)
+    share_type=me.StringField(choices=("message","profile","post"))
+    share_id=me.DictField(null=True)
     meta = {
         "indexes": ["chat", "sender", "created_at"]
     }
