@@ -3,6 +3,7 @@ package com.narxoz.social.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.*
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -140,7 +141,7 @@ fun FeedContent(
     vm:    FeedViewModel,
     modifier: Modifier = Modifier
 ) {
-    val listState = rememberLazyListState()
+    val listState = rememberSaveable(saver = LazyListState.Saver) { LazyListState() }
 
     /* -------- PULL-TO-REFRESH -------- */
     val pullState = rememberPullRefreshState(
