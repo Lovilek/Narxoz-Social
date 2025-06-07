@@ -1,6 +1,40 @@
 version: '3.8'
 services:
+  web:
+    build:
+      dockerfile:
+        ./Dockerfile
+      context: .
+    container_name: narxoz_social
+    command: sh -c "bash entrypoint.sh"
+    ports:
+      - 8000:8000
+    volumes:
+      - media:/app/media
+      - static:/app/static
+    env_file:
+      - .env
+    depends_on:
+      - mongo
+      - postgres
+      - redis
+
+  nginx:
+    build:
+      dockerfile:
+        ./Dockerfile.nginx
+      context: .
+
+    container_name: nginx
+    ports:
+      - 80:80
+    volumes:
+      - media:/media
+      - static:/static
+    depends_on:
+      - web
   mongo:
+    container_name: mongo
     image: mongo:7.0
     environment:
       MONGO_INITDB_ROOT_USERNAME: mongoadmin
@@ -10,16 +44,18 @@ services:
     volumes:
       - mongodata:/data/db
   postgres:
+    container_name: postgres
     image: postgres:16
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: mysecretpassword
       POSTGRES_DB: postgres
     ports:
-      - "5431:5432"
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
   redis:
+    container_name: redis
     image: redis:7
     ports:
       - "6379:6379"
@@ -28,3 +64,8 @@ volumes:
     driver: local
   postgres_data:
     driver: local
+  media:
+    driver: local
+  static:
+    driver: local
+
