@@ -11,10 +11,14 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
+from dotenv import load_dotenv
+load_dotenv(BASE_DIR / ".env")
 
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
@@ -96,21 +100,21 @@ WSGI_APPLICATION = 'backend.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'mysecretpassword',
-        'HOST': 'localhost',
-        'PORT': '5431',
+        'NAME': os.getenv("POSTGRES_DB"),
+        'USER': os.getenv("POSTGRES_USER"),
+        'PASSWORD': os.getenv("POSTGRES_PASSWORD"),
+        'HOST': os.getenv("POSTGRES_HOST"),
+        'PORT': os.getenv("POSTGRES_PORT"),
     }
 }
 
 MONGODB_DATABASES = {
     "default": {
-        "name": "narxoz_social",
-        "host": "localhost",
-        "port": 27017,
-        "username": "mongoadmin",
-        "password": "mysecretpassword",
+        "name": os.getenv("MONGO_DB"),
+        "host": os.getenv("MONGO_HOST"),
+        "port": os.getenv("MONGO_PORT"),
+        "username": os.getenv("MONGO_USER"),
+        "password": os.getenv("MONGO_PASS"),
         "tz_aware": True,
     }
 }
@@ -119,13 +123,13 @@ MONGODB_DATABASES = {
 from mongoengine import connect
 import os
 
-MONGO_HOST = os.getenv("MONGO_HOST", "localhost")
-MONGO_PORT = int(os.getenv("MONGO_PORT", 27017))
-MONGO_DB   = os.getenv("MONGO_DB",   "narxoz_social_chat")
-MONGO_USER = os.getenv("MONGO_USER", "mongoadmin")
-MONGO_PASS = os.getenv("MONGO_PASS", "mysecretpassword")
+MONGO_HOST = os.getenv("MONGO_HOST")
+MONGO_PORT = os.getenv("MONGO_PORT")
+MONGO_DB   = os.getenv("MONGO_DB")
+MONGO_USER = os.getenv("MONGO_USER")
+MONGO_PASS = os.getenv("MONGO_PASS")
 
-MONGO_URI = f"mongodb://{MONGO_USER}:{MONGO_PASS}@{MONGO_HOST}:{MONGO_PORT}/{MONGO_DB}?authSource=admin"
+MONGO_URI = os.getenv("MONGO_URI")
 
 connect(
     db   = MONGO_DB,
@@ -169,7 +173,7 @@ SIMPLE_JWT = {
     'ROTATE_REFRESH_TOKENS': True,
     'BLACKLIST_AFTER_ROTATION': True,
     'ALGORITHM': 'HS256',
-    'SIGNING_KEY': 'shGWPdv5YQFX9plAWlqABmOaQxT3RLsP',
+    'SIGNING_KEY': os.getenv("SIMPLE_JWT_SIGNING_KEY"),
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
@@ -189,6 +193,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / "static"
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -206,19 +211,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, "media")
 
 
 
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-# EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
-# EMAIL_BACKEND = "django.core.mail.backends.filebased.EmailBackend"
-# EMAIL_FILE_PATH = BASE_DIR / "tmp_emails"
+EMAIL_BACKEND = os.getenv("EMAIL_BACKEND")
 
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'narxozsocial@gmail.com'
-EMAIL_HOST_PASSWORD = 'dfog qrii rkyw gphx'
+
+EMAIL_HOST = os.getenv("EMAIL_HOST")
+EMAIL_PORT = os.getenv("EMAIL_PORT")
+EMAIL_USE_TLS = os.getenv("EMAIL_USE_TLS")
+EMAIL_HOST_USER = os.getenv("EMAIL_HOST_USER")
+EMAIL_HOST_PASSWORD = os.getenv("EMAIL_HOST_PASSWORD")
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-#bmvt syhr coal pent
-#dfog qrii rkyw gphx
 
 
 ASGI_APPLICATION = "backend.asgi.application"
@@ -227,7 +228,12 @@ CHANNEL_LAYERS = {
     "default": {
         "BACKEND": "channels_redis.core.RedisChannelLayer",
         "CONFIG": {
-            "hosts": [("localhost", 6379)],
+            "hosts": [
+                (
+                    os.getenv("CHANNEL_REDIS_HOST"),
+                    int(os.getenv("CHANNEL_REDIS_PORT"))
+                )
+            ],
         },
     },
 }
@@ -240,6 +246,6 @@ LOGGING = {
     },
 }
 
-CELERY_BROKER_URL = "redis://localhost:6379/0"
-CELERY_RESULT_BACKEND = "redis://localhost:6379/1"
+CELERY_BROKER_URL = os.getenv("CELERY_BROKER_URL")
+CELERY_RESULT_BACKEND =  os.getenv("CELERY_RESULT_BACKEND")
 CELERY_TIMEZONE = TIME_ZONE
