@@ -7,5 +7,5 @@ class LikesRepository(
     private val api: LikesApi = RetrofitInstance.likesApi
 ) {
     suspend fun toggle(postId: Int) = runCatching { api.toggle(postId) }
-    suspend fun load (postId: Int)  = runCatching { api.list  (postId) }
+    suspend fun load(postId: Int) = runCatching { api.list(postId).results }
 }

@@ -60,7 +60,7 @@ fun LikesScreen(postId: Int, onBack: () -> Unit) {
             ) {
                 items(state.likes) { like ->
                     ListItem(
-                        headlineContent = { Text("User #${'$'}{like.author}") },
+                        headlineContent = { Text(like.authorNickname) },
                         supportingContent = { Text(like.createdAt) }
                     )
                 }

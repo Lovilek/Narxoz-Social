@@ -4,9 +4,15 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
+import com.google.gson.annotations.SerializedName
+import com.narxoz.social.api.PageResponse
+
 data class LikeDto(
-    val id:        Long,
-    val author:    Int,
+    val id: Long,
+    val author: Int,
+    @SerializedName("author_nickname")
+    val authorNickname: String,
+    @SerializedName("created_at")
     val createdAt: String
 )
 
@@ -21,5 +27,5 @@ interface LikesApi {
     @GET("api/posts/{post_id}/likes/")
     suspend fun list(
         @Path("post_id") postId: Int
-    ): List<LikeDto>
+    ): PageResponse<LikeDto>
 }
