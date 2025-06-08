@@ -24,6 +24,7 @@ class AuthRepository(context: Context) {
         private const val KEY_ACCESS  = "jwt_access"
         private const val KEY_REFRESH = "jwt_refresh"
         private const val KEY_ROLE    = "user_role"
+        private const val KEY_POLICY   = "policy_accepted"
 
         @Volatile private var cachedAccess:  String? = null
         @Volatile private var cachedRefresh: String? = null
@@ -41,6 +42,13 @@ class AuthRepository(context: Context) {
         private lateinit var appPrefs: SharedPreferences   // инициализируем один раз
 
         fun init(prefs: SharedPreferences) { appPrefs = prefs }
+
+        fun isPolicyAccepted(): Boolean =
+            appPrefs.getBoolean(KEY_POLICY, false)
+
+        fun setPolicyAccepted(value: Boolean) {
+            appPrefs.edit().putBoolean(KEY_POLICY, value).apply()
+        }
 
         private fun saveStaticTokens(acc: String, ref: String) {
             appPrefs.edit()
