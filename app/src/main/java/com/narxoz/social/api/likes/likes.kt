@@ -4,9 +4,13 @@ import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
 
+import com.google.gson.annotations.SerializedName
+
 data class LikeDto(
-    val id:        Long,
-    val author:    Int,
+    val id: Long,
+    val author: Int,
+    @SerializedName("author_nickname")
+    val authorNickname: String,
     val createdAt: String
 )
 
