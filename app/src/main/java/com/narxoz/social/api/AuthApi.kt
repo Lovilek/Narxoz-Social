@@ -34,4 +34,7 @@ interface AuthApi {
     @POST("api/users/token/refresh/")
     fun refreshSync(@Body req: RefreshRequest): Call<RefreshResponse>
 
+    @POST("api/users/accept-policy/")
+    suspend fun acceptPolicy(): Response<MessageResponse>
+
 }

@@ -34,6 +34,9 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
 
+    private val _policyAccepted = MutableStateFlow(AuthRepository.isPolicyAccepted())
+    val policyAccepted = _policyAccepted.asStateFlow()
+
     init {
         loadStoredCredentials(application)
     }
@@ -43,6 +46,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         val storedEmail = prefs.getString("email", "") ?: ""
         val storedPassword = prefs.getString("password", "") ?: ""
         val storedStaySignedIn = prefs.getBoolean("stay_signed_in", false)
+        _policyAccepted.value = AuthRepository.isPolicyAccepted()
 
         if (storedStaySignedIn && storedEmail.isNotBlank() && storedPassword.isNotBlank()) {
             _email.value = storedEmail
@@ -85,6 +89,7 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
                 if (role != null) {
                     _loginResult.value = role
                     saveCredentials(email, password, staySignedIn)
+                    _policyAccepted.value = AuthRepository.isPolicyAccepted()
                 } else {
                     // Если сервер ответил неудачей / нет токена или роли
                     _loginResult.value = null
@@ -102,6 +107,14 @@ class AuthViewModel(application: Application) : AndroidViewModel(application) {
         _email.value = ""
         _password.value = ""
         _staySignedIn.value = false
+    }
+
+    fun acceptPolicy() {
+        viewModelScope.launch {
+            if (repository.acceptPolicy()) {
+                _policyAccepted.value = true
+            }
+        }
     }
 
     private fun saveCredentials(email: String, password: String, staySignedIn: Boolean) {

@@ -36,3 +36,7 @@ data class PagedPostsDto(
     val previous: String?,
     val results: List<PostDto>
 )
+
+data class MessageResponse(
+    val message: String
+)

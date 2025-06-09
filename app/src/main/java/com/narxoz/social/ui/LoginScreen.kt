@@ -29,6 +29,7 @@ fun LoginScreen(
     val staySignedIn by viewModel.staySignedIn.collectAsState()
     val loginResult by viewModel.loginResult.observeAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val policyAccepted by viewModel.policyAccepted.collectAsState()
 
     // Наблюдаем за сообщением об ошибке
     val loginErrorState by viewModel.loginError.observeAsState()
@@ -37,11 +38,15 @@ fun LoginScreen(
 
     LaunchedEffect(loginResult) {
         loginResult?.let { role ->
-            when (role) {
-                "student" -> navController.navigate("student")
-                "teacher" -> navController.navigate("teacher")
-                "admin" -> navController.navigate("mainFeed")
-                else -> { /* Обработка ошибок/неизвестных ролей */ }
+            if (policyAccepted) {
+                when (role) {
+                    "student" -> navController.navigate("student")
+                    "teacher" -> navController.navigate("teacher")
+                    "admin" -> navController.navigate("mainFeed")
+                    else -> {}
+                }
+            } else {
+                navController.navigate("policy/$role")
             }
         }
     }
