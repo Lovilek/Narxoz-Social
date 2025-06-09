@@ -35,6 +35,9 @@ class AuthRepository(context: Context) {
             .getString(KEY_ID, null)
             ?.toIntOrNull()
 
+        fun getUserRole(): String? =
+            appPrefs.getString(KEY_ROLE, null)
+
         /** Публичный геттер для Interceptor’а */
         fun getAccessToken(): String?  = cachedAccess
         fun getRefreshToken(): String? = cachedRefresh
@@ -140,6 +143,7 @@ class AuthRepository(context: Context) {
     }
     private fun saveRole(role: String, persist: Boolean) {
         if (persist) localPrefs.edit().putString(KEY_ROLE, role).apply()
+        appPrefs.edit().putString(KEY_ROLE, role).apply()
     }
 
     /** Сохраняем ID пользователя сразу в оба SharedPreferences,
