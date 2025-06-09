@@ -5,6 +5,9 @@ import androidx.lifecycle.viewModelScope
 import com.narxoz.social.network.api.ChatApi
 import com.narxoz.social.network.dto.ChatShortDto
 import com.narxoz.social.repository.ChatRepository
+import okhttp3.MediaType.Companion.toMediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -29,6 +32,22 @@ class ChatListViewModel @Inject constructor(
 
     /** ← публичный read-only поток */
     val loading: StateFlow<Boolean> = _loading.asStateFlow()
+
+    fun createGroup(name: String, members: List<Int>) {
+        viewModelScope.launch {
+            val parts = members.map { id ->
+                MultipartBody.Part.createFormData("members", id.toString())
+            }
+
+            val bodyName = RequestBody.create("text/plain".toMediaType(), name)
+
+            runCatching {
+                api.createGroup(bodyName, parts)
+            }.onSuccess {
+                refresh(silent = true)
+            }
+        }
+    }
 
     /** ---------- refresh теперь public и НЕ suspend ---------- */
     fun refresh(silent: Boolean = false) = viewModelScope.launch {

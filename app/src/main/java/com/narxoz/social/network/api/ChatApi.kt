@@ -3,13 +3,19 @@ package com.narxoz.social.network.api
 import retrofit2.Response
 import com.narxoz.social.network.dto.ChatShortDto
 import com.narxoz.social.network.dto.MessageDto
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.http.Body
 import retrofit2.http.GET
+import retrofit2.http.Multipart
 import retrofit2.http.POST
+import retrofit2.http.Part
 import retrofit2.http.Path
 import retrofit2.http.Query
 
 data class SendMessageRequest(val text: String)
+
+data class GroupIdResponse(val group_id: String)
 
 interface ChatApi {
 
@@ -31,4 +37,12 @@ interface ChatApi {
         @Path("id") chatId: String,
         @Body body: SendMessageRequest
     ): MessageDto
+
+    @Multipart
+    @POST("api/chats/group/create/")
+    suspend fun createGroup(
+        @Part("name") name: RequestBody,
+        @Part members: List<MultipartBody.Part>,
+        @Part avatar: MultipartBody.Part? = null
+    ): GroupIdResponse
 }
