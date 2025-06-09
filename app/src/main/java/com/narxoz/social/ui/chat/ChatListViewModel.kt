@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import com.narxoz.social.network.api.ChatApi
 import com.narxoz.social.network.dto.ChatShortDto
 import com.narxoz.social.repository.ChatRepository
+import com.narxoz.social.repository.AuthRepository
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -34,6 +35,10 @@ class ChatListViewModel @Inject constructor(
     val loading: StateFlow<Boolean> = _loading.asStateFlow()
 
     fun createGroup(name: String, members: List<Int>) {
+        // Only teachers and organizations are allowed to create groups
+        val role = AuthRepository.getUserRole()
+        if (role !in listOf("teacher", "organization")) return
+
         viewModelScope.launch {
             val parts = members.map { id ->
                 MultipartBody.Part.createFormData("members", id.toString())

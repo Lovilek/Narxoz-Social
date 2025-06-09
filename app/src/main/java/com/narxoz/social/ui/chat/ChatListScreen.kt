@@ -22,7 +22,7 @@ fun ChatListScreen(
 ) {
     val chats by viewModel.chats.collectAsState()
     val role = remember { AuthRepository.getUserRole() }
-    val allowCreate = role in listOf("student", "teacher", "organization")
+    val allowCreate = role in listOf("teacher", "organization")
     var showDialog by remember { mutableStateOf(false) }
     var name by remember { mutableStateOf("") }
     var members by remember { mutableStateOf("") }
