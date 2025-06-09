@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">NarxozSocial</string>
+    <string name="privacy_title">Privacy Policy</string>
+    <string name="accept">Accept</string>
 </resources>

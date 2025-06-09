@@ -15,6 +15,7 @@ import com.narxoz.social.ui.comments.CommentsScreen
 import com.narxoz.social.ui.navigation.LocalNavController
 import com.narxoz.social.ui.likes.LikesScreen
 import com.narxoz.social.ui.orgs.OrganizationsScreen
+import com.narxoz.social.ui.PrivacyPolicyScreen
 
 @Composable
 fun AppNavigation(onToggleTheme: () -> Unit) {
@@ -33,6 +34,13 @@ fun AppNavigation(onToggleTheme: () -> Unit) {
 
         NavHost(navController, startDestination = "login") {
             composable("login") { LoginScreen(navController) }
+            composable(
+                route = "policy/{role}",
+                arguments = listOf(navArgument("role") { type = NavType.StringType })
+            ) { backStack ->
+                val role = backStack.arguments!!.getString("role") ?: "student"
+                PrivacyPolicyScreen(navController, role)
+            }
             composable("mainFeed") { MainFeedScreen(onToggleTheme = onToggleTheme) }
             composable(
                 "comments/{postId}",
