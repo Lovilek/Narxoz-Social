@@ -7,6 +7,7 @@ import com.google.gson.annotations.SerializedName
 import retrofit2.Call
 import retrofit2.http.GET
 import retrofit2.http.Query
+import com.narxoz.social.api.AcceptPolicyRequest
 
 // Модель данных для входа
 data class LoginRequest(val login: String, val password: String)
@@ -35,6 +36,6 @@ interface AuthApi {
     fun refreshSync(@Body req: RefreshRequest): Call<RefreshResponse>
 
     @POST("api/users/accept-policy/")
-    suspend fun acceptPolicy(): Response<MessageResponse>
+    suspend fun acceptPolicy(@Body req: AcceptPolicyRequest): Response<MessageResponse>
 
 }

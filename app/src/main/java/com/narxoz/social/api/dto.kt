@@ -40,3 +40,7 @@ data class PagedPostsDto(
 data class MessageResponse(
     val message: String
 )
+
+data class AcceptPolicyRequest(
+    val accepted: Boolean = true
+)

@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.narxoz.social.repository.EventsRepository
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
 import java.time.LocalDateTime
@@ -23,17 +24,25 @@ data class EventUi(
 )
 
 /* ───────── ViewModel-заглушка ───────── */
-class EventsViewModel : ViewModel() {
+class EventsViewModel(
+    private val repo: EventsRepository = EventsRepository()
+) : ViewModel() {
     private val _items = MutableStateFlow<List<EventUi>>(emptyList())
     val items: StateFlow<List<EventUi>> = _items
 
-    init { loadDemo() }
+    init { refresh() }
 
-    private fun loadDemo() = viewModelScope.launch {
-        _items.value = listOf(
-            EventUi(1, "Job Fair",  LocalDateTime.now().plusDays(1),  "Карьера и стажировки"),
-            EventUi(2, "Hackathon", LocalDateTime.now().plusDays(10), "48-часовой марафон")
-        )
+    fun refresh() = viewModelScope.launch {
+        repo.load().onSuccess { events ->
+            _items.value = events.map { dto ->
+                EventUi(
+                    id = dto.id,
+                    title = dto.title,
+                    startsAt = runCatching { LocalDateTime.parse(dto.startsAt) }.getOrElse { LocalDateTime.now() },
+                    description = dto.description
+                )
+            }
+        }
     }
 }
 

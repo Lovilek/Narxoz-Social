@@ -7,6 +7,7 @@ import com.narxoz.social.api.AuthApi
 import com.narxoz.social.api.LoginRequest
 import com.narxoz.social.api.RefreshRequest
 import com.narxoz.social.api.RetrofitInstance
+import com.narxoz.social.api.AcceptPolicyRequest
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -154,7 +155,7 @@ class AuthRepository(context: Context) {
 
     suspend fun acceptPolicy(): Boolean = withContext(Dispatchers.IO) {
         try {
-            val resp = RetrofitInstance.authApi.acceptPolicy()
+            val resp = RetrofitInstance.authApi.acceptPolicy(AcceptPolicyRequest())
             if (resp.isSuccessful) {
                 setPolicyAccepted(true)
                 true
