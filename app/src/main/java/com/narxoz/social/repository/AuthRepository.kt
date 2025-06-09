@@ -91,10 +91,11 @@ class AuthRepository(context: Context) {
 
     /* ---------- ctor ---------- */
     init {
-        cacheTokens(
-            localPrefs.getString(KEY_ACCESS,  null),
-            localPrefs.getString(KEY_REFRESH, null)
-        )
+        val acc = localPrefs.getString(KEY_ACCESS, null)
+        val ref = localPrefs.getString(KEY_REFRESH, null)
+        if (acc != null && ref != null) {
+            cacheTokens(acc, ref)
+        }
     }
 
     /* ---------- LOGIN ---------- */
