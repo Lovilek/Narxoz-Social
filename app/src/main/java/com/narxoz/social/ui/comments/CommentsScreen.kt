@@ -1,6 +1,7 @@
 package com.narxoz.social.ui.comments
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
@@ -29,6 +31,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.material.pullrefresh.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -36,7 +39,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.narxoz.social.api.CommentDto
 import com.narxoz.social.repository.AuthRepository
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun CommentsScreen(
     postId: Int,
@@ -50,6 +53,11 @@ fun CommentsScreen(
     val myId = AuthRepository.getUserId()
 
     var input by remember { mutableStateOf("") }
+
+    val pullState = rememberPullRefreshState(
+        refreshing = loading.isLoading,
+        onRefresh  = { vm.reload() }
+    )
 
     Scaffold(
         topBar = {
@@ -70,18 +78,25 @@ fun CommentsScreen(
                 LinearProgressIndicator(Modifier.fillMaxWidth())
             }
 
-            LazyColumn(
-                modifier = Modifier.weight(1f),
-                contentPadding = PaddingValues(12.dp),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(list) { comment ->
-                    CommentItem(
-                        c        = comment,
-                        myId     = myId,
-                        onDelete = { id -> vm.delete(id) }   // ← вызываем ViewModel
-                    )
+            Box(Modifier.weight(1f).pullRefresh(pullState)) {
+                LazyColumn(
+                    modifier = Modifier.fillMaxWidth(),
+                    contentPadding = PaddingValues(12.dp),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(list) { comment ->
+                        CommentItem(
+                            c        = comment,
+                            myId     = myId,
+                            onDelete = { id -> vm.delete(id) }
+                        )
+                    }
                 }
+                PullRefreshIndicator(
+                    refreshing = loading.isLoading,
+                    state = pullState,
+                    modifier = Modifier.align(Alignment.TopCenter)
+                )
             }
 
             Row(
