@@ -7,7 +7,11 @@ import kotlinx.coroutines.withContext
 
 class EventsRepository {
     private val api = RetrofitInstance.eventsApi
+    private var page = 1
 
-    suspend fun load(): Result<List<EventDto>> =
-        withContext(Dispatchers.IO) { runCatching { api.all() } }
+    suspend fun load(): Result<List<EventDto>> = withContext(Dispatchers.IO) {
+        runCatching { api.list(page++).results }
+    }
+
+    fun reset() { page = 1 }
 }
