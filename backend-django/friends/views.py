@@ -16,7 +16,7 @@ from .tasks import send_friend_request_push
 
 
 class SendFriendRequestView(APIView):
-    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
+    permission_classes = [IsAuthenticated, IsAcceptPrivacy]
 
     def post(self, request, user_id):
         to_user = get_object_or_404(User, id=user_id)
@@ -27,34 +27,33 @@ class SendFriendRequestView(APIView):
             return Response({"error": "Вы уже друзья"}, status=400)
 
         if FriendRequest.objects.filter(
-            (Q(from_user=request.user, to_user=to_user) |
-             Q(from_user=to_user,    to_user=request.user)),
-            status="pending"
+                (Q(from_user=request.user, to_user=to_user) |
+                 Q(from_user=to_user, to_user=request.user)),
+                status="pending"
         ).exists():
             return Response({"error": "Уже существует активный запрос"}, status=400)
 
         declined = FriendRequest.objects.filter(
             (Q(from_user=request.user, to_user=to_user) |
-             Q(from_user=to_user,    to_user=request.user)),
+             Q(from_user=to_user, to_user=request.user)),
             status="declined"
         ).first()
 
         if declined:
             declined.from_user = request.user
-            declined.to_user   = to_user
-            declined.status    = "pending"
+            declined.to_user = to_user
+            declined.status = "pending"
             declined.save()
-            send_friend_request_push.apply_async((declined.pk,),queue="push")
+            send_friend_request_push.apply_async((declined.pk,), queue="push")
             return Response({"message": "Запрос отправлен повторно"}, status=201)
 
-        fr=FriendRequest.objects.create(
+        fr = FriendRequest.objects.create(
             from_user=request.user,
             to_user=to_user,
             status="pending",
         )
-        send_friend_request_push.apply_async((fr.pk,),queue="push")
+        send_friend_request_push.apply_async((fr.pk,), queue="push")
         return Response({"message": "Запрос отправлен"}, status=201)
-
 
         # existing_request = FriendRequest.objects.filter(
         #     (Q(from_user=request.user) & Q(to_user=to_user)) |
@@ -70,7 +69,7 @@ class SendFriendRequestView(APIView):
 
 
 class RespondFriendRequestView(APIView):
-    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
+    permission_classes = [IsAuthenticated, IsAcceptPrivacy]
 
     def post(self, request, request_id):
         friend_request = get_object_or_404(FriendRequest, id=request_id)
@@ -98,7 +97,7 @@ class RespondFriendRequestView(APIView):
 
 
 class CancelFriendRequestView(APIView):
-    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
+    permission_classes = [IsAuthenticated, IsAcceptPrivacy]
 
     def delete(self, request, request_id):
         friend_request = get_object_or_404(FriendRequest, id=request_id)
@@ -111,7 +110,7 @@ class CancelFriendRequestView(APIView):
 
 
 class RemoveFriendView(APIView):
-    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
+    permission_classes = [IsAuthenticated, IsAcceptPrivacy]
 
     @transaction.atomic
     def delete(self, request, user_id):
@@ -134,7 +133,7 @@ class RemoveFriendView(APIView):
 
 
 class FriendsListView(APIView):
-    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
+    permission_classes = [IsAuthenticated, IsAcceptPrivacy]
 
     def get(self, request):
         friends = request.user.friends.all()
@@ -150,7 +149,7 @@ class IncomingRequestsView(APIView):
 
 
 class DeclinedRequestsView(APIView):
-    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
+    permission_classes = [IsAuthenticated, IsAcceptPrivacy]
 
     def get(self, request):
         requests = FriendRequest.objects.filter(to_user=request.user, status="declined")
@@ -166,7 +165,7 @@ class OutgoingRequestsView(APIView):
 
 
 class FriendshipStatusView(APIView):
-    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
+    permission_classes = [IsAuthenticated, IsAcceptPrivacy]
 
     def get(self, request, user_id):
         other_user = get_object_or_404(User, id=user_id)

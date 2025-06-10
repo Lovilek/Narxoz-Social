@@ -6,6 +6,7 @@ from channels.db import database_sync_to_async
 
 jwt_auth = JWTAuthentication()
 
+
 class JWTAuthMiddleware:
     """
     ASGI-middleware для Channels.

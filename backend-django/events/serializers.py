@@ -6,7 +6,8 @@ from .models import Event, EventSubscription, EventReminder
 
 
 class EventSerializer(serializers.ModelSerializer):
-    created_by=serializers.StringRelatedField(read_only=True)
+    created_by = serializers.StringRelatedField(read_only=True)
+
     class Meta:
         model = Event
         fields = '__all__'
@@ -21,15 +22,16 @@ class EventSerializer(serializers.ModelSerializer):
             raise serializers.ValidationError("Нельзя создавать события в прошлом")
         return data
 
+
 class EventSubscriptionSerializer(serializers.ModelSerializer):
-    event=EventSerializer(read_only=True)
-    user=AnotherUserSerializer(read_only=True)
+    event = EventSerializer(read_only=True)
+    user = AnotherUserSerializer(read_only=True)
     stage = serializers.SerializerMethodField()  # 0/1/2/3
 
     class Meta:
         model = EventSubscription
         fields = ("id", "user", "event", "joined", "stage")
-        read_only_fields = ('joined',"user")
+        read_only_fields = ('joined', "user")
 
     def _get_reminder(self, obj):
         return getattr(obj, "eventreminder", None)
@@ -37,6 +39,7 @@ class EventSubscriptionSerializer(serializers.ModelSerializer):
     def get_stage(self, obj):
         reminder = self._get_reminder(obj)
         return reminder.stage if reminder else 0
+
 
 class EventReminderSerializer(serializers.ModelSerializer):
     subscription = EventSubscriptionSerializer(read_only=True)

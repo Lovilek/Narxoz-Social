@@ -19,27 +19,26 @@ app.conf.update(
 default_ex = Exchange("celery", type="direct")
 app.conf.task_queues = (
     Queue("celery", default_ex, routing_key="celery"),
-    Queue("mail",   default_ex, routing_key="mail"),
-    Queue("push",   default_ex, routing_key="push"),
+    Queue("mail", default_ex, routing_key="mail"),
+    Queue("push", default_ex, routing_key="push"),
 )
 
 app.conf.task_routes = {
     "events.tasks.send_event_reminders": {"queue": "celery", "routing_key": "celery"},
-    "events.tasks.send_event_email":     {"queue": "mail",   "routing_key": "mail"},
-    "events.tasks.send_event_push":      {"queue": "push",   "routing_key": "push"},
-    "friends.tasks.send_friend_request_push": {"queue": "push",   "routing_key": "push"},
+    "events.tasks.send_event_email": {"queue": "mail", "routing_key": "mail"},
+    "events.tasks.send_event_push": {"queue": "push", "routing_key": "push"},
+    "friends.tasks.send_friend_request_push": {"queue": "push", "routing_key": "push"},
 }
 
 app.conf.beat_schedule = {
     "event-reminders-every-3-min": {
-        "task":    "events.tasks.send_event_reminders",
+        "task": "events.tasks.send_event_reminders",
         "schedule": timedelta(minutes=3),
         "options": {"queue": "celery", "routing_key": "celery"},
     },
     "friend-request-every-1-min": {
-        "task":"friends.tasks.send_friend_request_push",
+        "task": "friends.tasks.send_friend_request_push",
         "schedule": timedelta(minutes=1),
         "options": {"queue": "push", "routing_key": "push"},
     }
 }
-

@@ -12,17 +12,18 @@ from users.permissions import IsAcceptPrivacy
 
 class NotificationListView(ListAPIView):
     serializer_class = NotificationSerializer
-    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
+    permission_classes = [IsAuthenticated, IsAcceptPrivacy]
 
     def get_queryset(self):
-        return Notification.objects.filter(user=self.request.user,is_read=False).order_by('-created_at')
+        return Notification.objects.filter(user=self.request.user, is_read=False).select_related("user").order_by(
+            '-created_at')
 
 
 class ReadNotificationView(APIView):
-    permission_classes = [IsAuthenticated,IsAcceptPrivacy]
+    permission_classes = [IsAuthenticated, IsAcceptPrivacy]
 
-    def post(self, request,notification_id):
-        notification = get_object_or_404(Notification,pk=notification_id)
+    def post(self, request, notification_id):
+        notification = get_object_or_404(Notification, pk=notification_id)
         if notification.is_read:
             return Response({"error": "Уведомление уже прочитано."}, status=status.HTTP_400_BAD_REQUEST)
         notification.is_read = True

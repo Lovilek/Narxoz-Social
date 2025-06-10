@@ -4,8 +4,9 @@ from django.core.validators import RegexValidator
 from django.utils import timezone
 from datetime import timedelta
 
+
 class UserManager(BaseUserManager):
-    def create_user(self, login, full_name,email,nickname,avatar_path=None, password=None,role="student"):
+    def create_user(self, login, full_name, email, nickname, avatar_path=None, password=None, role="student"):
         if not login:
             raise ValueError("Логин обязателен")
 
@@ -30,8 +31,8 @@ class UserManager(BaseUserManager):
         user.save(using=self._db)
         return user
 
-    def create_superuser(self, login, full_name,email,nickname, password,avatar_path=None):
-        user = self.create_user(login.upper(), full_name,email,nickname,avatar_path,password,role="admin")
+    def create_superuser(self, login, full_name, email, nickname, password, avatar_path=None):
+        user = self.create_user(login.upper(), full_name, email, nickname, avatar_path, password, role="admin")
         user.is_superuser = True
         user.is_staff = True
         user.save(using=self._db)
@@ -56,15 +57,14 @@ class User(AbstractBaseUser, PermissionsMixin):
     login = models.CharField(max_length=10, unique=True, validators=[login_validator])
     full_name = models.CharField(max_length=100)
     email = models.EmailField(unique=True)
-    nickname = models.CharField(max_length=50,unique=True)
+    nickname = models.CharField(max_length=50, unique=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="student")
     avatar_path = models.ImageField(upload_to="avatars/", blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    friends=models.ManyToManyField("self",symmetrical=True,blank=True)
+    friends = models.ManyToManyField("self", symmetrical=True, blank=True)
     is_policy_accepted = models.BooleanField(default=False)
     last_seen = models.DateTimeField(null=True, blank=True)
-
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -75,12 +75,11 @@ class User(AbstractBaseUser, PermissionsMixin):
     objects = UserManager()
 
     USERNAME_FIELD = "login"
-    REQUIRED_FIELDS = ["full_name","email","nickname"]
+    REQUIRED_FIELDS = ["full_name", "email", "nickname"]
 
     def save(self, *args, **kwargs):
-        self.login=self.login.upper()
+        self.login = self.login.upper()
         super().save(*args, **kwargs)
-
 
     def __str__(self):
         return f"{self.id}-{self.login} - {self.nickname}"

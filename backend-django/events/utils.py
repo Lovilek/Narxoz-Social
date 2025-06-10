@@ -1,5 +1,6 @@
 from datetime import timedelta
 
+
 def calc_initial_stage(delta):
     """
     Calculate the initial stage based on the time delta.

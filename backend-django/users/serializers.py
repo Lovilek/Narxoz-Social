@@ -1,13 +1,19 @@
+import re
+
 from rest_framework import serializers
 from django.contrib.auth import authenticate
+from rest_framework.exceptions import ValidationError
+
 from .models import User
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
+
 
 class FriendShortSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         fields = ['id', 'nickname']
+
 
 class UserSerializer(serializers.ModelSerializer):
     friends = serializers.SerializerMethodField()
@@ -15,8 +21,9 @@ class UserSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = User
-        fields = ['id', 'login', 'full_name', 'email', 'nickname', 'role','friends', 'avatar_path','is_policy_accepted','last_seen','is_online']
-        read_only_fields = ['id', 'login', 'full_name', 'email', 'role','friends']
+        fields = ['id', 'login', 'full_name', 'email', 'nickname', 'role', 'friends', 'avatar_path',
+                  'is_policy_accepted', 'last_seen', 'is_online']
+        read_only_fields = ['id', 'login', 'full_name', 'email', 'role', 'friends']
 
     def get_friends(self, obj):
         friends = obj.friends.all()
@@ -26,12 +33,10 @@ class UserSerializer(serializers.ModelSerializer):
         return obj.is_online
 
 
-
 class OrganizationSerializer(serializers.ModelSerializer):
-
     class Meta:
-        model=User
-        fields = ['id', 'full_name', 'nickname', 'avatar_path',]
+        model = User
+        fields = ['id', 'full_name', 'nickname', 'avatar_path', ]
         read_only_fields = ['id', 'full_name', 'nickname', 'avatar_path']
 
 
@@ -39,10 +44,9 @@ class AnotherUserSerializer(serializers.ModelSerializer):
     friends = serializers.SerializerMethodField()
     is_online = serializers.SerializerMethodField()
 
-
     class Meta:
         model = User
-        fields = ['id', 'full_name', 'nickname', 'avatar_path','friends','last_seen','is_online']
+        fields = ['id', 'full_name', 'nickname', 'avatar_path', 'friends', 'last_seen', 'is_online']
 
     def get_friends(self, obj):
         friends = obj.friends.all()
@@ -52,14 +56,23 @@ class AnotherUserSerializer(serializers.ModelSerializer):
         return obj.is_online
 
 
-
 class RegisterSerializer(serializers.ModelSerializer):
-    password = serializers.CharField(write_only=True, min_length=6)
+    password = serializers.CharField(write_only=True, min_length=8)
     role = serializers.ChoiceField(choices=User.ROLE_CHOICES)
 
     class Meta:
         model = User
-        fields = ['login', 'full_name', 'email', 'nickname', 'password', 'role','avatar_path']
+        fields = ['login', 'full_name', 'email', 'nickname', 'password', 'role', 'avatar_path']
+
+    def validate_password(self, value):
+
+        if not re.search(r'[A-Za-z]', value):
+            raise ValidationError("Пароль должен содержать как минимум одну букву.")
+        if not re.search(r'\d', value):
+            raise ValidationError("Пароль должен содержать как минимум одну цифру.")
+        if not re.search(r'[^A-Za-z0-9]', value):
+            raise ValidationError("Пароль должен содержать как минимум один специальный символ.")
+        return value
 
     def validate(self, data):
         request = self.context.get("request")
