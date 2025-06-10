@@ -11,14 +11,19 @@ class FriendShortSerializer(serializers.ModelSerializer):
 
 class UserSerializer(serializers.ModelSerializer):
     friends = serializers.SerializerMethodField()
+    is_online = serializers.SerializerMethodField()
+
     class Meta:
         model = User
-        fields = ['id', 'login', 'full_name', 'email', 'nickname', 'role','friends', 'avatar_path','is_policy_accepted']
+        fields = ['id', 'login', 'full_name', 'email', 'nickname', 'role','friends', 'avatar_path','is_policy_accepted','last_seen','is_online']
         read_only_fields = ['id', 'login', 'full_name', 'email', 'role','friends']
 
     def get_friends(self, obj):
         friends = obj.friends.all()
         return FriendShortSerializer(friends, many=True).data
+
+    def get_is_online(self, obj):
+        return obj.is_online
 
 
 
@@ -26,20 +31,25 @@ class OrganizationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model=User
-        fields = ['id', 'full_name', 'nickname', 'avatar_path']
+        fields = ['id', 'full_name', 'nickname', 'avatar_path',]
         read_only_fields = ['id', 'full_name', 'nickname', 'avatar_path']
 
 
 class AnotherUserSerializer(serializers.ModelSerializer):
     friends = serializers.SerializerMethodField()
+    is_online = serializers.SerializerMethodField()
+
 
     class Meta:
         model = User
-        fields = ['id', 'full_name', 'nickname', 'avatar_path','friends']
+        fields = ['id', 'full_name', 'nickname', 'avatar_path','friends','last_seen','is_online']
 
     def get_friends(self, obj):
         friends = obj.friends.all()
         return FriendShortSerializer(friends, many=True).data
+
+    def get_is_online(self, obj):
+        return obj.is_online
 
 
 
