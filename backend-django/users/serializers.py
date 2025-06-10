@@ -98,6 +98,6 @@ class LoginSerializer(serializers.Serializer):
             raise serializers.ValidationError("Неверный логин")
 
         if not check_password(data["password"], user.password):
-            raise serializers.ValidationError(f"Неверный пароль, то что написали вы:{data['password']}, ожидаемый:{user.password}")
+            raise serializers.ValidationError(f"Неверный пароль")
 
         return user
