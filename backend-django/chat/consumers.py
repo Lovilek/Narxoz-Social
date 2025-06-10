@@ -1,6 +1,7 @@
 import json
 from datetime import datetime
 from bson import ObjectId
+from django.utils import timezone
 
 from channels.generic.websocket import AsyncWebsocketConsumer
 from channels.db import database_sync_to_async
@@ -66,7 +67,11 @@ class ChatConsumer(AsyncWebsocketConsumer):
         chat.save()
         return msg
 
-
+    @database_sync_to_async
+    def _update_last_seen(self,user_id:int)-> None:
+        User.objects.filter(id=user_id).update(
+            last_seen=timezone.now()
+        )
 
     async def connect(self):
         # print("CONNECT called, scope headers =", self.scope["headers"])   ###
@@ -83,10 +88,14 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self.close(code=4001)
             return
 
+        await self._update_last_seen(user.id)
         await self.channel_layer.group_add(self.room_group_name, self.channel_name)
         await self.accept()
 
     async def disconnect(self, code):
+        user = self.scope.get("user")
+        if user and user.is_authenticated:
+            await self._update_last_seen(user.id)
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
 

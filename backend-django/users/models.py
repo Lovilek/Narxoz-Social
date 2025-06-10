@@ -1,7 +1,8 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin, Group, Permission
 from django.db import models
 from django.core.validators import RegexValidator
-
+from django.utils import timezone
+from datetime import timedelta
 
 class UserManager(BaseUserManager):
     def create_user(self, login, full_name,email,nickname,avatar_path=None, password=None,role="student"):
@@ -62,6 +63,8 @@ class User(AbstractBaseUser, PermissionsMixin):
     updated_at = models.DateTimeField(auto_now=True)
     friends=models.ManyToManyField("self",symmetrical=True,blank=True)
     is_policy_accepted = models.BooleanField(default=False)
+    last_seen = models.DateTimeField(null=True, blank=True)
+
 
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)
@@ -81,3 +84,9 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return f"{self.id}-{self.login} - {self.nickname}"
+
+    @property
+    def is_online(self) -> bool:
+        if not self.last_seen:
+            return False
+        return timezone.now() - self.last_seen < timedelta(minutes=5)
