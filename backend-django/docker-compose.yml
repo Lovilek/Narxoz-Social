@@ -18,6 +18,55 @@ services:
       - mongo
       - postgres
       - redis
+  celery:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: celery
+    command: celery -A backend worker --loglevel=info
+    volumes:
+      - media:/app/media
+      - static:/app/static
+    env_file:
+      - .env
+    depends_on:
+      - web
+      - redis
+      - mongo
+      - postgres
+  celery1:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: celery1
+    command: celery -A backend worker --loglevel=info
+    volumes:
+      - media:/app/media
+      - static:/app/static
+    env_file:
+      - .env
+    depends_on:
+      - web
+      - redis
+      - mongo
+      - postgres
+
+  celery-beat:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: celery_beat
+    command: celery -A backend beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    volumes:
+      - media:/app/media
+      - static:/app/static
+    env_file:
+      - .env
+    depends_on:
+      - web
+      - redis
+      - mongo
+      - postgres
 
   nginx:
     build:

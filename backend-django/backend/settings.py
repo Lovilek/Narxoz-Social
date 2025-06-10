@@ -54,7 +54,7 @@ INSTALLED_APPS = [
     'search.apps.SearchConfig',
     'events.apps.EventsConfig',
     'notifications.apps.NotificationsConfig',
-
+    'complaints.apps.ComplaintsConfig',
 
 ]
 
