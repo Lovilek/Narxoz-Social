@@ -11,6 +11,7 @@ class NotificationsConsumer(AsyncJsonWebsocketConsumer):
     @database_sync_to_async
     def _update_last_seen(self, user_id: int) -> None:
         User.objects.filter(id=user_id).update(last_seen=timezone.now())
+
     async def connect(self):
         user = self.scope["user"]
         if user.is_authenticated:
@@ -31,5 +32,5 @@ class NotificationsConsumer(AsyncJsonWebsocketConsumer):
     async def event_reminder(self, event: dict):
         await self.send(text_data=json.dumps(event, ensure_ascii=False))
 
-    async def friend_request(self,data:dict):
-        await self.send(text_data=json.dumps(data,ensure_ascii=False))
+    async def friend_request(self, data: dict):
+        await self.send(text_data=json.dumps(data, ensure_ascii=False))

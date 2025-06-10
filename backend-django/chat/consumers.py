@@ -13,7 +13,6 @@ from .documents import Chat, Message
 
 class ChatConsumer(AsyncWebsocketConsumer):
 
-
     @database_sync_to_async
     def _is_member(self, chat_id: str, user_id: int) -> bool:
         return Chat.objects(id=ObjectId(chat_id), members=user_id).first() is not None
@@ -36,20 +35,19 @@ class ChatConsumer(AsyncWebsocketConsumer):
         for uid in chat.members:
             if uid == sender_id:
                 continue
-            chat.unread_counters[str(uid)] =chat.unread_counters.get(str(uid), 0) + 1
+            chat.unread_counters[str(uid)] = chat.unread_counters.get(str(uid), 0) + 1
 
         chat.save()
 
         return msg
 
-
     @database_sync_to_async
     def _save_file_message(self, chat_id: str, sender_id: int, file_url: str, filename: str) -> Message:
-        chat= Chat.objects.get(id=ObjectId(chat_id))
+        chat = Chat.objects.get(id=ObjectId(chat_id))
         if chat.unread_counters is None:
             chat.unread_counters = {}
 
-        msg= Message(
+        msg = Message(
             chat=chat,
             sender=sender_id,
             text=None,
@@ -68,7 +66,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
         return msg
 
     @database_sync_to_async
-    def _update_last_seen(self,user_id:int)-> None:
+    def _update_last_seen(self, user_id: int) -> None:
         User.objects.filter(id=user_id).update(
             last_seen=timezone.now()
         )
@@ -98,7 +96,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             await self._update_last_seen(user.id)
         await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
-
     async def receive(self, text_data=None, bytes_data=None):
 
         try:
@@ -112,7 +109,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             if not text:
                 return
             msg = await self._save_text_message(self.chat_id, user.id, text)
-            payload={
+            payload = {
                 "type": "chat.message",
                 "message": {
                     "id": str(msg.id),
@@ -120,8 +117,8 @@ class ChatConsumer(AsyncWebsocketConsumer):
                     "text": msg.text,
                     "file_url": None,
                     "filename": None,
-                    "share_type":msg.share_type,
-                    "share_id":msg.share_id,
+                    "share_type": msg.share_type,
+                    "share_id": msg.share_id,
                     "created_at": msg.created_at.isoformat(),
                 }
             }
@@ -131,7 +128,7 @@ class ChatConsumer(AsyncWebsocketConsumer):
             if not file_url or not filename:
                 return
             msg = await self._save_file_message(self.chat_id, user.id, file_url, filename)
-            payload={
+            payload = {
                 "type": "chat.file",
                 "message": {
                     "id": str(msg.id),
@@ -148,7 +145,6 @@ class ChatConsumer(AsyncWebsocketConsumer):
             return
 
         await self.channel_layer.group_send(self.room_group_name, payload)
-
 
     async def chat_message(self, event):
         await self.send(text_data=json.dumps(event["message"]))

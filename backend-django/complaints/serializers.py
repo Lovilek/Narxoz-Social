@@ -11,14 +11,14 @@ class ComplaintSerializer(serializers.ModelSerializer):
         choices=["user", "post", "event"], write_only=True,
         help_text="К какому объекту относится жалоба"
     )
-    object_id=serializers.IntegerField()
+    object_id = serializers.IntegerField()
     content_type = serializers.SerializerMethodField(read_only=True)
-    author=serializers.StringRelatedField(read_only=True)
-    processed_by=serializers.StringRelatedField(read_only=True)
+    author = serializers.StringRelatedField(read_only=True)
+    processed_by = serializers.StringRelatedField(read_only=True)
 
     class Meta:
-        model=Complaint
-        fields=[
+        model = Complaint
+        fields = [
             "id",
             "target_type",
             "content_type",
@@ -31,7 +31,7 @@ class ComplaintSerializer(serializers.ModelSerializer):
             "author",
             "created_at",
         ]
-        read_only_fields = ["status", "content_type","processed_by", "processed_at", "author", "created_at"]
+        read_only_fields = ["status", "content_type", "processed_by", "processed_at", "author", "created_at"]
 
     def _get_ctype(self, target_type: str) -> ContentType:
         app_map = {
