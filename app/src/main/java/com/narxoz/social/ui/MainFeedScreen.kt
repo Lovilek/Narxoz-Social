@@ -18,6 +18,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.narxoz.social.ui.chat.ChatScreen
+import com.narxoz.social.ui.chat.ChatListViewModel
 import com.narxoz.social.ui.events.EventsScreen
 import com.narxoz.social.ui.navigation.LocalNavController
 import com.narxoz.social.ui.orgs.OrganizationsScreen
@@ -28,6 +29,7 @@ import androidx.compose.material.pullrefresh.*
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.narxoz.social.ui.chat.ChatListScreen
+import androidx.hilt.navigation.compose.hiltViewModel
 
 /* -------------------------------------------------------------------------- */
 /*                            PUBLIC COMPOSABLE                               */
@@ -41,6 +43,10 @@ fun MainFeedScreen(
 ) {
     /* внутренний NavController – управляет вкладками bottom-bar */
     val innerNav = rememberNavController()
+
+    /* ViewModel для списка чатов, чтобы получить число непрочитанных */
+    val chatVm: ChatListViewModel = hiltViewModel()
+    val unreadChats by chatVm.unreadCount.collectAsState()
 
     /* текущий route для подсветки иконки */
     val currentBack by innerNav.currentBackStackEntryAsState()
@@ -67,7 +73,8 @@ fun MainFeedScreen(
                             }
                         }
                     }
-                }
+                },
+                unreadChats = unreadChats
             )
         }
     ) { innerPadding ->
