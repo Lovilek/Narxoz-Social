@@ -6,6 +6,8 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.WbSunny
 import androidx.compose.material3.*
+import androidx.compose.material3.BadgedBox
+import androidx.compose.material3.Badge
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -18,7 +20,11 @@ import com.narxoz.social.R
  */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MainFeedTopBar(onToggleTheme: () -> Unit) {
+fun MainFeedTopBar(
+    onToggleTheme: () -> Unit,
+    notifications: Int,
+    onNotifications: () -> Unit
+) {
     TopAppBar(
         title = { Text("Narxoz Social") },
         colors = TopAppBarDefaults.mediumTopAppBarColors(
@@ -47,12 +53,20 @@ fun MainFeedTopBar(onToggleTheme: () -> Unit) {
                     modifier = topIconModifier
                 )
             }
-            IconButton(onClick = { /* TODO: Уведомления */ }) {
-                Icon(
-                    painter = painterResource(R.drawable.ic_notifications),
-                    contentDescription = "Notifications",
-                    modifier = topIconModifier
-                )
+            IconButton(onClick = onNotifications) {
+                BadgedBox(
+                    badge = {
+                        if (notifications > 0) {
+                            Badge { Text(notifications.toString()) }
+                        }
+                    }
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_notifications),
+                        contentDescription = "Notifications",
+                        modifier = topIconModifier
+                    )
+                }
             }
         }
     )
