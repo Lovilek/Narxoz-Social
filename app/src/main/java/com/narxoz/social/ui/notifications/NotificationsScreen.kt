@@ -3,9 +3,13 @@ package com.narxoz.social.ui.notifications
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.material.ExperimentalMaterialApi
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.*
+import androidx.compose.material.SwipeToDismiss
+import androidx.compose.material.DismissDirection as MaterialDismissDirection
+import androidx.compose.material.DismissValue as MaterialDismissValue
+import androidx.compose.material.rememberDismissState as rememberMaterialDismissState
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -15,7 +19,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
-@OptIn(ExperimentalMaterial3Api::class)
+@OptIn(ExperimentalMaterial3Api::class, ExperimentalMaterialApi::class)
 @Composable
 fun NotificationsScreen(
     onBack: () -> Unit = {},
@@ -58,8 +62,8 @@ fun NotificationsScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(state.notifications) { notif ->
-                    val dismissState = rememberDismissState { value ->
-                        if (value != DismissValue.Default) {
+                    val dismissState = rememberMaterialDismissState { value ->
+                        if (value != MaterialDismissValue.Default) {
                             vm.markRead(notif.id)
                             false
                         } else {
@@ -70,7 +74,7 @@ fun NotificationsScreen(
                     SwipeToDismiss(
                         state = dismissState,
                         background = {},
-                        directions = setOf(DismissDirection.EndToStart, DismissDirection.StartToEnd)
+                        directions = setOf(MaterialDismissDirection.EndToStart, MaterialDismissDirection.StartToEnd)
                     ) {
                         ListItem(
                             headlineContent = { Text(notif.text.orEmpty()) },
