@@ -12,6 +12,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -30,6 +31,7 @@ import androidx.compose.material.pullrefresh.*
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.narxoz.social.ui.chat.ChatListScreen
+import com.narxoz.social.ui.chat.ChatListViewModel
 
 /* -------------------------------------------------------------------------- */
 /*                            PUBLIC COMPOSABLE                               */
@@ -47,6 +49,9 @@ fun MainFeedScreen(
     val notifVm: NotificationsViewModel = viewModel()
     val notifState by notifVm.state.collectAsState()
     val unread = notifState.notifications.count { !it.isRead }
+
+    val chatVm: ChatListViewModel = hiltViewModel()
+    val unreadChats by chatVm.unreadCount.collectAsState()
 
     /* текущий route для подсветки иконки */
     val currentBack by innerNav.currentBackStackEntryAsState()
@@ -73,7 +78,8 @@ fun MainFeedScreen(
                             }
                         }
                     }
-                }
+                },
+                unreadChats = unreadChats
             )
         }
     ) { innerPadding ->
