@@ -16,7 +16,10 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotificationsScreen(onBack: () -> Unit, vm: NotificationsViewModel = viewModel()) {
+fun NotificationsScreen(
+    onBack: () -> Unit = {},
+    vm: NotificationsViewModel = viewModel()
+) {
     val state by vm.state.collectAsState()
 
     Scaffold(
