@@ -18,28 +18,14 @@ services:
       - mongo
       - postgres
       - redis
-  celery:
-    build:
-      context: .
-      dockerfile: ./Dockerfile
-    container_name: celery
-    command: celery -A backend worker --loglevel=info
-    volumes:
-      - media:/app/media
-      - static:/app/static
-    env_file:
-      - .env
-    depends_on:
-      - web
-      - redis
-      - mongo
-      - postgres
+    restart: always
+
   celery1:
     build:
       context: .
       dockerfile: ./Dockerfile
-    container_name: celery1
-    command: celery -A backend worker --loglevel=info
+    container_name: celery
+    command: celery -A backend worker -l INFO -Q celery --pool solo  --concurrency 1 -n sched@%h
     volumes:
       - media:/app/media
       - static:/app/static
@@ -50,13 +36,50 @@ services:
       - redis
       - mongo
       - postgres
+    restart: always
+
+  celery2:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: celery2
+    command:  celery -A backend worker -l INFO -Q push --pool solo --concurrency 1 -n pusher@%h
+    volumes:
+      - media:/app/media
+      - static:/app/static
+    env_file:
+      - .env
+    depends_on:
+      - web
+      - redis
+      - mongo
+      - postgres
+    restart: always
+
+  celery3:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    container_name: celery3
+    command:  celery -A backend worker -l INFO -Q mail --pool solo --concurrency 1 -n mailer@%h
+    volumes:
+      - media:/app/media
+      - static:/app/static
+    env_file:
+      - .env
+    depends_on:
+      - web
+      - redis
+      - mongo
+      - postgres
+    restart: always
 
   celery-beat:
     build:
       context: .
       dockerfile: ./Dockerfile
     container_name: celery_beat
-    command: celery -A backend beat --loglevel=info --scheduler django_celery_beat.schedulers:DatabaseScheduler
+    command:  celery -A backend beat  -l INFO
     volumes:
       - media:/app/media
       - static:/app/static
@@ -67,6 +90,7 @@ services:
       - redis
       - mongo
       - postgres
+    restart: always
 
   nginx:
     build:
@@ -82,6 +106,8 @@ services:
       - static:/static
     depends_on:
       - web
+    restart: always
+
   mongo:
     container_name: mongo
     image: mongo:7.0
@@ -92,6 +118,8 @@ services:
       - 27017:27017
     volumes:
       - mongodata:/data/db
+    restart: always
+
   postgres:
     container_name: postgres
     image: postgres:16
@@ -103,11 +131,14 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    restart: always
+
   redis:
     container_name: redis
     image: redis:7
     ports:
       - "6379:6379"
+    restart: always
 volumes:
   mongodata:
     driver: local

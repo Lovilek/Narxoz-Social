@@ -1,3 +1,5 @@
+import os
+
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.utils.encoding import force_str
@@ -103,7 +105,7 @@ class CustomPasswordResetView(APIView):
         token = default_token_generator.make_token(user)
 
         # reset_url=request.build_absolute_uri(f"/reset/{uid}/{token}")
-        reset_url = f"http://localhost:5173/reset-password/{uid}/{token}"
+        reset_url = f"{os.getenv("FRONTEND_URL")}/reset-password/{uid}/{token}"
 
         send_mail(
             subject="Сброс пароля Narxoz Social",
