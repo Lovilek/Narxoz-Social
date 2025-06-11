@@ -5,7 +5,7 @@ import com.narxoz.social.api.RetrofitInstance
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
-class NotificationRepository {
+class NotificationsRepository {
     private val api = RetrofitInstance.notificationsApi
 
     suspend fun list(): Result<List<NotificationDto>> = withContext(Dispatchers.IO) {

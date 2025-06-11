@@ -18,7 +18,8 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun BottomNavBar(
     currentScreen: String,
-    onScreenSelected: (String) -> Unit
+    onScreenSelected: (String) -> Unit,
+    unreadChats: Int = 0
 ) {
     val navIconModifier = Modifier.size(26.dp)   // ⬅︎ единый размер для всех
 
@@ -71,11 +72,21 @@ fun BottomNavBar(
                     || currentScreen.startsWith("chat/"),
             onClick  = { onScreenSelected("chats") },
             icon = {
-                Icon(
-                    painter = painterResource(R.drawable.ic_chat),
-                    contentDescription = "Chats",
-                    modifier = navIconModifier
-                )
+                if (unreadChats > 0) {
+                    BadgedBox(badge = { Badge { Text(unreadChats.toString()) } }) {
+                        Icon(
+                            painter = painterResource(R.drawable.ic_chat),
+                            contentDescription = "Chats",
+                            modifier = navIconModifier
+                        )
+                    }
+                } else {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_chat),
+                        contentDescription = "Chats",
+                        modifier = navIconModifier
+                    )
+                }
             },
             label  = { Text("Chats") },
             colors = itemColors()

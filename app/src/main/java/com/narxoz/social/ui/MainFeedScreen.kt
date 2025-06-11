@@ -22,6 +22,8 @@ import com.narxoz.social.ui.events.EventsScreen
 import com.narxoz.social.ui.navigation.LocalNavController
 import com.narxoz.social.ui.orgs.OrganizationsScreen
 import com.narxoz.social.ui.settings.SettingsScreen
+import com.narxoz.social.ui.notifications.NotificationsScreen
+import com.narxoz.social.ui.notifications.NotificationsViewModel
 import kotlinx.coroutines.flow.filterNotNull
 import kotlinx.coroutines.flow.map
 import androidx.compose.material.pullrefresh.*
@@ -42,6 +44,10 @@ fun MainFeedScreen(
     /* внутренний NavController – управляет вкладками bottom-bar */
     val innerNav = rememberNavController()
 
+    val notifVm: NotificationsViewModel = viewModel()
+    val notifState by notifVm.state.collectAsState()
+    val unread = notifState.notifications.count { !it.isRead }
+
     /* текущий route для подсветки иконки */
     val currentBack by innerNav.currentBackStackEntryAsState()
     val route = currentBack?.destination?.route
@@ -53,7 +59,7 @@ fun MainFeedScreen(
 
     /* -------- Scaffold с единственным BottomBar -------- */
     Scaffold(
-        topBar = { MainFeedTopBar(onToggleTheme) },
+        topBar = { MainFeedTopBar(onToggleTheme, unread) { innerNav.navigate("notifications") } },
         bottomBar = {
             BottomNavBar(
                 currentScreen = currentTab,
@@ -104,6 +110,11 @@ fun MainFeedScreen(
 
             /* ---------- Чаты ---------- */
             composable("chats") { ChatListScreen(innerNav) }
+
+            /* ---------- Уведомления ---------- */
+            composable("notifications") {
+                NotificationsScreen(onBack = { innerNav.popBackStack() })
+            }
 
             composable(
                 route = "chat/{chatId}",

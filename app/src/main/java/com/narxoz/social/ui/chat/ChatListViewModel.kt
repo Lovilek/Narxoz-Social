@@ -15,6 +15,9 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.isActive
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -33,6 +36,15 @@ class ChatListViewModel @Inject constructor(
 
     /** ← публичный read-only поток */
     val loading: StateFlow<Boolean> = _loading.asStateFlow()
+
+    /** Количество непрочитанных сообщений во всех чатах */
+    val unreadCount: StateFlow<Int> = _chats
+        .map { list -> list.sumOf { it.unread } }
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.Lazily,
+            initialValue = 0
+        )
 
     fun createGroup(name: String, members: List<Int>) {
         // Only teachers and organizations are allowed to create groups
