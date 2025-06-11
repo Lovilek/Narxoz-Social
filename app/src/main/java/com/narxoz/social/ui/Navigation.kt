@@ -64,7 +64,7 @@ fun AppNavigation(onToggleTheme: () -> Unit) {
                 )
             }
             composable("notifications") {
-                NotificationsScreen { navController.popBackStack() }
+                NotificationsScreen(onBack = { navController.popBackStack() })
             }
             composable("student") { MainFeedScreen(onToggleTheme = onToggleTheme) }
             composable("teacher") { MainFeedScreen(onToggleTheme = onToggleTheme) }
