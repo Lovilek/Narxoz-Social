@@ -28,6 +28,7 @@ import androidx.compose.material.pullrefresh.*
 import androidx.navigation.NavType
 import androidx.navigation.navArgument
 import com.narxoz.social.ui.chat.ChatListScreen
+import com.narxoz.social.ui.NotificationsViewModel
 
 /* -------------------------------------------------------------------------- */
 /*                            PUBLIC COMPOSABLE                               */
@@ -42,6 +43,10 @@ fun MainFeedScreen(
     /* внутренний NavController – управляет вкладками bottom-bar */
     val innerNav = rememberNavController()
 
+    val notifVm: NotificationsViewModel = viewModel()
+    val notifCount by notifVm.state.map { it.unread }.collectAsState(initial = 0)
+    val rootNav = LocalNavController.current
+
     /* текущий route для подсветки иконки */
     val currentBack by innerNav.currentBackStackEntryAsState()
     val route = currentBack?.destination?.route
@@ -53,7 +58,7 @@ fun MainFeedScreen(
 
     /* -------- Scaffold с единственным BottomBar -------- */
     Scaffold(
-        topBar = { MainFeedTopBar(onToggleTheme) },
+        topBar = { MainFeedTopBar(onToggleTheme, notifCount) { rootNav.navigate("notifications") } },
         bottomBar = {
             BottomNavBar(
                 currentScreen = currentTab,
@@ -117,9 +122,6 @@ fun MainFeedScreen(
 
             /* ---------- Настройки ---------- */
             composable("settings") {
-                /* Можно безопасно вызвать здесь: мы ещё в композиции */
-                val rootNav = LocalNavController.current
-
                 SettingsScreen(
                     onLogout = {
                         rootNav.navigate("login") { popUpTo(0) }

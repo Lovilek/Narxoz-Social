@@ -16,6 +16,7 @@ import com.narxoz.social.ui.navigation.LocalNavController
 import com.narxoz.social.ui.likes.LikesScreen
 import com.narxoz.social.ui.orgs.OrganizationsScreen
 import com.narxoz.social.ui.PrivacyPolicyScreen
+import com.narxoz.social.ui.NotificationsScreen
 
 @Composable
 fun AppNavigation(onToggleTheme: () -> Unit) {
@@ -61,6 +62,9 @@ fun AppNavigation(onToggleTheme: () -> Unit) {
                     postId = id,
                     onBack = { navController.popBackStack() }
                 )
+            }
+            composable("notifications") {
+                NotificationsScreen { navController.popBackStack() }
             }
             composable("student") { MainFeedScreen(onToggleTheme = onToggleTheme) }
             composable("teacher") { MainFeedScreen(onToggleTheme = onToggleTheme) }
