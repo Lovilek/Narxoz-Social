@@ -9,7 +9,7 @@ class NotificationsRepository {
     private val api = RetrofitInstance.notificationsApi
 
     suspend fun list(): Result<List<NotificationDto>> = withContext(Dispatchers.IO) {
-        runCatching { api.list() }
+        runCatching { api.list().results }
     }
 
     suspend fun markRead(id: Int) = withContext(Dispatchers.IO) {
