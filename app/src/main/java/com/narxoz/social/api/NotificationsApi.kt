@@ -8,7 +8,7 @@ import com.narxoz.social.api.PagedResponse
 
 data class NotificationDto(
     val id: Int,
-    val text: String,
+    val text: String?,
     val isRead: Boolean
 )
 

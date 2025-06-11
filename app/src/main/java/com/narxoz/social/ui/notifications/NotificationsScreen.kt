@@ -58,7 +58,7 @@ fun NotificationsScreen(
             ) {
                 items(state.notifications) { notif ->
                     ListItem(
-                        headlineContent   = { Text(notif.text) },
+                        headlineContent   = { Text(notif.text.orEmpty()) },
                         trailingContent   = {
                             if (!notif.isRead) Badge { }
                         },
