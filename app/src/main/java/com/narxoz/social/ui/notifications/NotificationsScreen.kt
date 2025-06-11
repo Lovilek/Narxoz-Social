@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -57,14 +58,29 @@ fun NotificationsScreen(
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 items(state.notifications) { notif ->
-                    ListItem(
-                        headlineContent   = { Text(notif.text.orEmpty()) },
-                        trailingContent   = {
-                            if (!notif.isRead) Badge { }
-                        },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    )
+                    val dismissState = rememberDismissState { value ->
+                        if (value != DismissValue.Default) {
+                            vm.markRead(notif.id)
+                            false
+                        } else {
+                            true
+                        }
+                    }
+
+                    SwipeToDismiss(
+                        state = dismissState,
+                        background = {},
+                        directions = setOf(DismissDirection.EndToStart, DismissDirection.StartToEnd)
+                    ) {
+                        ListItem(
+                            headlineContent = { Text(notif.text.orEmpty()) },
+                            trailingContent = {
+                                if (!notif.isRead) Badge { }
+                            },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                        )
+                    }
                     Divider()
                 }
             }
