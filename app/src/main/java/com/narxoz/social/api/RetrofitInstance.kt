@@ -3,6 +3,7 @@ package com.narxoz.social.api
 import android.content.SharedPreferences
 import com.narxoz.social.api.likes.LikesApi
 import com.narxoz.social.api.EventsApi
+import com.narxoz.social.api.NotificationsApi
 import com.narxoz.social.repository.AuthRepository
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -61,5 +62,8 @@ object RetrofitInstance {
     }
     val eventsApi: EventsApi by lazy {
         retrofit.create(EventsApi::class.java)
+    }
+    val notificationsApi: NotificationsApi by lazy {
+        retrofit.create(NotificationsApi::class.java)
     }
 }

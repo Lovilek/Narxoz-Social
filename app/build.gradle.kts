@@ -3,6 +3,8 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
 
+    alias(libs.plugins.google.services)
+
     id("com.google.dagger.hilt.android")
     id("org.jetbrains.kotlin.kapt")
 }
@@ -60,6 +62,7 @@ dependencies {
     // Hilt
     implementation("com.google.dagger:hilt-android:2.50")
     implementation(libs.firebase.database.ktx)
+    implementation(libs.firebase.messaging.ktx)
     kapt("com.google.dagger:hilt-compiler:2.50")
     implementation("androidx.hilt:hilt-navigation-compose:1.2.0")
 

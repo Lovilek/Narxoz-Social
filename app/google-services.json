@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "205279390747",
+    "project_id": "my-awesome-project-id-ab70b",
+    "storage_bucket": "my-awesome-project-id-ab70b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:205279390747:android:b47547b08c31364633dcbe",
+        "android_client_info": {
+          "package_name": "com.narxoz.social"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAYfkuqUlaY6CSKzc9047lTwwqAwVzgDS0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
