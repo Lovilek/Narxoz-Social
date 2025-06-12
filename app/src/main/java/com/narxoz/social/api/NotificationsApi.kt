@@ -9,8 +9,26 @@ import com.narxoz.social.api.PagedResponse
 
 data class NotificationDto(
     val id: Int,
-    @SerializedName("text")     val text: String?,
-    @SerializedName("is_read")  val isRead: Boolean
+    val type: String?,
+    val data: NotificationData?,
+    @SerializedName("created_at") val createdAt: String?,
+    @SerializedName("is_read") val isRead: Boolean
+) {
+    val text: String
+        get() = when (type) {
+            "event_reminder" -> data?.event?.title ?: ""
+            else -> data?.toString() ?: ""
+        }
+}
+
+data class NotificationData(
+    val type: String?,
+    val event: EventBrief?
+)
+
+data class EventBrief(
+    val id: Int,
+    val title: String?
 )
 
 interface NotificationsApi {

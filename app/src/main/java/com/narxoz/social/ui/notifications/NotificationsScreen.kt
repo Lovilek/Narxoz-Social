@@ -77,7 +77,7 @@ fun NotificationsScreen(
                         directions = setOf(MaterialDismissDirection.EndToStart, MaterialDismissDirection.StartToEnd)
                     ) {
                         ListItem(
-                            headlineContent = { Text(notif.text.orEmpty()) },
+                            headlineContent = { Text(notif.text) },
                             trailingContent = {
                                 if (!notif.isRead) Badge { }
                             },
