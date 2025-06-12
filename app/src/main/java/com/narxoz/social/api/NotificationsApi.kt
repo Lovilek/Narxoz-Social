@@ -17,18 +17,25 @@ data class NotificationDto(
     val text: String
         get() = when (type) {
             "event_reminder" -> data?.event?.title ?: ""
+            "friend_request" -> "Friend request from ${'$'}{data?.friend?.nickname ?: ""}"
             else -> data?.toString() ?: ""
         }
 }
 
 data class NotificationData(
     val type: String?,
-    val event: EventBrief?
+    val event: EventBrief?,
+    val friend: FriendBrief?,
 )
 
 data class EventBrief(
     val id: Int,
     val title: String?
+)
+
+data class FriendBrief(
+    val id: Int,
+    val nickname: String?,
 )
 
 interface NotificationsApi {
