@@ -17,7 +17,7 @@ data class NotificationDto(
     val text: String
         get() = when (type) {
             "event_reminder" -> data?.event?.title ?: ""
-            "friend_request" -> "Friend request from ${'$'}{data?.friend?.nickname ?: ""}"
+            "friend_request" -> "Friend request from ${data?.friend?.nickname ?: ""}"
             else -> data?.toString() ?: ""
         }
 }
