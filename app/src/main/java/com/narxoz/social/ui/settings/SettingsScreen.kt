@@ -22,6 +22,9 @@ fun SettingsScreen(onLogout: () -> Unit = {}) {
         ) {
             Text("Тема, уведомления, о приложении…", style = MaterialTheme.typography.bodyMedium)
             val rootNav = LocalNavController.current
+            Button(onClick = { rootNav.navigate("friends") }) {
+                Text("Мои друзья")
+            }
             Button(onClick = { rootNav.navigate("addFriend") }) {
                 Text("Добавить друга")
             }
