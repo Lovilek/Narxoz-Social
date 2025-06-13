@@ -14,6 +14,11 @@ import com.narxoz.social.network.dto.ChatShortDto
 fun ChatRow(chat: ChatShortDto, navController: NavController) {
     ListItem(
         headlineContent = { Text(chat.name ?: "") },
+        supportingContent = {
+            chat.lastMessage?.let { msg ->
+                Text(msg.text, maxLines = 1)
+            }
+        },
         trailingContent = {
             if (chat.unread > 0) {
                 Badge { Text(chat.unread.toString()) }
