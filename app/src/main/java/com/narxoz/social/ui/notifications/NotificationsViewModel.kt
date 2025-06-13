@@ -29,7 +29,7 @@ class NotificationsViewModel(
         notifsRes
             .onSuccess { list ->
                 val incomingMap = incomingRes.getOrNull()
-                    ?.associateBy { it.fromUser?.id }
+                    ?.associateBy { it.id }
                     ?: emptyMap()
 
                 val patched = list.map { n ->
