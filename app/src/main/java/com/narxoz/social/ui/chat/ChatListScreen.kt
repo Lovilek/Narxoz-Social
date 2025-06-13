@@ -1,6 +1,6 @@
 package com.narxoz.social.ui.chat
 
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
@@ -35,8 +35,12 @@ fun ChatListScreen(
             }
         }
     }) { padding ->
-        // Не забываем наружный padding, если нужен
-        LazyColumn(contentPadding = padding) {
+        // Передаём паддинги во внешний модификатор,
+        // чтобы список не прятался под системный бар
+        LazyColumn(
+            modifier = Modifier.padding(padding),
+            contentPadding = PaddingValues()
+        ) {
 
             items(chats) { chat ->
                 ChatRow(chat = chat, navController = navController)
