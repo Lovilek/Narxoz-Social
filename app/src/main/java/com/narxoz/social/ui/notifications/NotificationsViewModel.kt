@@ -22,9 +22,34 @@ class NotificationsViewModel(
 
     fun reload() = viewModelScope.launch {
         _state.update { it.copy(isLoading = true, error = null) }
-        repo.list()
+
+        val notifsRes = repo.list()
+        val incomingRes = friendsRepo.incoming()
+
+        notifsRes
             .onSuccess { list ->
-                _state.update { it.copy(isLoading = false, notifications = list) }
+                val incomingMap = incomingRes.getOrNull()
+                    ?.associateBy { it.fromUser?.id }
+                    ?: emptyMap()
+
+                val patched = list.map { n ->
+                    if (n.type == "friend_request") {
+                        val fid = n.data?.friend?.id
+                        val name = fid?.let {
+                            incomingMap[fid]?.fromUser?.fullName
+                                ?: incomingMap[fid]?.fromUser?.nickname
+                        }
+                        if (!name.isNullOrBlank()) {
+                            n.copy(
+                                data = n.data?.copy(
+                                    friend = n.data.friend?.copy(nickname = name)
+                                )
+                            )
+                        } else n
+                    } else n
+                }
+
+                _state.update { it.copy(isLoading = false, notifications = patched) }
             }
             .onFailure { e ->
                 _state.update {

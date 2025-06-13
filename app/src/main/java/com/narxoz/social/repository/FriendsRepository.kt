@@ -11,7 +11,10 @@ class FriendsRepository(
     suspend fun cancel(id: Int) = runCatching { api.cancel(id) }
     suspend fun remove(id: Int) = runCatching { api.remove(id) }
     suspend fun respond(id: Int, accepted: Boolean) =
-        runCatching { api.respond(id, FriendRespondRequest(accepted)) }
+        runCatching {
+            val action = if (accepted) "accept" else "decline"
+            api.respond(id, FriendRespondRequest(action))
+        }
     suspend fun outgoing() = runCatching { api.outgoing() }
     suspend fun declined() = runCatching { api.declined() }
     suspend fun status(id: Int) = runCatching { api.status(id) }

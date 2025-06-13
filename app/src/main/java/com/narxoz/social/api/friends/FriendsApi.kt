@@ -13,16 +13,19 @@ import retrofit2.http.Path
 data class UserShortDto(
     val id: Int,
     val nickname: String?,
+    @SerializedName("full_name") val fullName: String?,
     @SerializedName("avatar_path") val avatarPath: String?
 )
 
 /** Запрос на ответ на входящую заявку */
-data class FriendRespondRequest(val accepted: Boolean)
+data class FriendRespondRequest(val action: String)
 
 /** Заявка в друзья */
 data class FriendRequestDto(
     val id: Int,
-    val from: UserShortDto?
+    @SerializedName("from_user") val fromUser: UserShortDto?,
+    @SerializedName("to_user") val toUser: UserShortDto?,
+    val status: String?
 )
 
 /** Статус дружбы */
