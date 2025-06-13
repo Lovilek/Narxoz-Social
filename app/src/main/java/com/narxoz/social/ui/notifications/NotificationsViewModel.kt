@@ -29,20 +29,23 @@ class NotificationsViewModel(
         notifsRes
             .onSuccess { list ->
                 val incomingMap = incomingRes.getOrNull()
-                    ?.associateBy { it.id }
+                    ?.associateBy { it.fromUser?.id }
                     ?: emptyMap()
 
                 val patched = list.map { n ->
                     if (n.type == "friend_request") {
-                        val fid = n.data?.friend?.id
-                        val name = fid?.let {
-                            incomingMap[fid]?.fromUser?.fullName
-                                ?: incomingMap[fid]?.fromUser?.nickname
-                        }
-                        if (!name.isNullOrBlank()) {
+                        val uid = n.data?.friend?.id
+                        val req = uid?.let { incomingMap[uid] }
+                        val name = req?.fromUser?.fullName ?: req?.fromUser?.nickname
+                        val reqId = req?.id
+
+                        if (reqId != null || !name.isNullOrBlank()) {
                             n.copy(
                                 data = n.data?.copy(
-                                    friend = n.data.friend?.copy(nickname = name)
+                                    friend = n.data.friend?.copy(
+                                        id = reqId ?: uid,
+                                        nickname = name ?: n.data.friend?.nickname
+                                    )
                                 )
                             )
                         } else n
