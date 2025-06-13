@@ -3,6 +3,7 @@ package com.narxoz.social.ui.notifications
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.narxoz.social.repository.NotificationsRepository
+import com.narxoz.social.repository.FriendsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -10,7 +11,8 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 class NotificationsViewModel(
-    private val repo: NotificationsRepository = NotificationsRepository()
+    private val repo: NotificationsRepository = NotificationsRepository(),
+    private val friendsRepo: FriendsRepository = FriendsRepository(),
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(NotificationsState(isLoading = true))
@@ -39,4 +41,9 @@ class NotificationsViewModel(
             })
         }
     }
+    fun respondToFriendRequest(friendId: Int, accepted: Boolean, notifId: Int) =
+        viewModelScope.launch {
+            friendsRepo.respond(friendId, accepted)
+            markRead(notifId)
+        }
 }

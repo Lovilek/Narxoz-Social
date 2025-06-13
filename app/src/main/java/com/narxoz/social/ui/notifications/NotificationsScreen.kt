@@ -12,6 +12,8 @@ import androidx.compose.material.DismissValue as MaterialDismissValue
 import androidx.compose.material.rememberDismissState as rememberMaterialDismissState
 import androidx.compose.material3.*
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Check
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.runtime.Composable
@@ -106,7 +108,26 @@ fun NotificationsScreen(
                         ListItem(
                             headlineContent = { Text(notif.text) },
                             trailingContent = {
-                                if (!notif.isRead) Badge { }
+                                if (notif.type == "friend_request" && !notif.isRead) {
+                                    Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                                        IconButton(onClick = {
+                                            notif.data?.friend?.id?.let {
+                                                vm.respondToFriendRequest(it, true, notif.id)
+                                            }
+                                        }) {
+                                            Icon(Icons.Default.Check, contentDescription = "Accept")
+                                        }
+                                        IconButton(onClick = {
+                                            notif.data?.friend?.id?.let {
+                                                vm.respondToFriendRequest(it, false, notif.id)
+                                            }
+                                        }) {
+                                            Icon(Icons.Default.Close, contentDescription = "Decline")
+                                        }
+                                    }
+                                } else if (!notif.isRead) {
+                                    Badge { }
+                                }
                             },
                             modifier = Modifier
                                 .fillMaxWidth()
