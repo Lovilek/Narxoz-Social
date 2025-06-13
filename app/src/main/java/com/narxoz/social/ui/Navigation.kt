@@ -17,6 +17,7 @@ import com.narxoz.social.ui.likes.LikesScreen
 import com.narxoz.social.ui.orgs.OrganizationsScreen
 import com.narxoz.social.ui.PrivacyPolicyScreen
 import com.narxoz.social.ui.notifications.NotificationsScreen
+import com.narxoz.social.ui.friends.AddFriendScreen
 
 @Composable
 fun AppNavigation(onToggleTheme: () -> Unit) {
@@ -69,6 +70,9 @@ fun AppNavigation(onToggleTheme: () -> Unit) {
             composable("student") { MainFeedScreen(onToggleTheme = onToggleTheme) }
             composable("teacher") { MainFeedScreen(onToggleTheme = onToggleTheme) }
             composable("organizations") { OrganizationsScreen() }
+            composable("addFriend") {
+                AddFriendScreen(onBack = { navController.popBackStack() })
+            }
         }
     }
 }

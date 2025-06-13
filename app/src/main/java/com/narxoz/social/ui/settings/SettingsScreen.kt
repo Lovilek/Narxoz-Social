@@ -6,6 +6,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.narxoz.social.ui.navigation.LocalNavController
 import com.narxoz.social.repository.AuthRepository
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -20,6 +21,10 @@ fun SettingsScreen(onLogout: () -> Unit = {}) {
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
             Text("Тема, уведомления, о приложении…", style = MaterialTheme.typography.bodyMedium)
+            val rootNav = LocalNavController.current
+            Button(onClick = { rootNav.navigate("addFriend") }) {
+                Text("Добавить друга")
+            }
             Button(onClick = {
                 AuthRepository.forceLogout()
                 onLogout()
