@@ -126,7 +126,7 @@ fun MainFeedScreen(
                 route = "chat/{chatId}",
                 arguments = listOf(navArgument("chatId") { type = NavType.StringType })
             ) {
-                ChatScreen()           // hiltViewModel цепляет chatId из аргументов
+                ChatScreen(onBack = { innerNav.popBackStack() })
             }
 
             /* ---------- Организации ---------- */

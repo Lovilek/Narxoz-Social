@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Send
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -16,41 +17,58 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.graphics.Color
 import com.narxoz.social.repository.AuthRepository
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ChatScreen(viewModel: ChatViewModel = hiltViewModel()) {
+fun ChatScreen(
+    onBack: () -> Unit = {},
+    viewModel: ChatViewModel = hiltViewModel()
+) {
     val msgs by viewModel.messages.collectAsState()
     val myId = remember { AuthRepository.getUserId() }
     val listState = rememberLazyListState()
 
-    Column {
-        LazyColumn(
-            reverseLayout = true,
-            state = listState,
-            modifier = Modifier.weight(1f)
-        ) {
-            items(msgs.reversed()) { m ->
-                MessageBubble(
-                    message = m,
-                    isMine = m.sender == myId
-                )
-            }
-        }
-
-        var input by remember { mutableStateOf("") }
-        Row {
-            TextField(
-                modifier = Modifier.weight(1f),
-                value = input,
-                onValueChange = { input = it },
-                placeholder = { Text("Сообщение") }
-            )
-            IconButton(onClick = {
-                if (input.isNotBlank()) {
-                    viewModel.sendMessage(input.trim())
-                    input = ""
+    Scaffold(
+        topBar = {
+            SmallTopAppBar(
+                title = { Text("Чат") },
+                navigationIcon = {
+                    IconButton(onClick = onBack) {
+                        Icon(Icons.Default.ArrowBack, contentDescription = null)
+                    }
                 }
-            }) {
-                Icon(Icons.Filled.Send, contentDescription = null)
+            )
+        }
+    ) { inner ->
+        Column(Modifier.padding(inner)) {
+            LazyColumn(
+                reverseLayout = true,
+                state = listState,
+                modifier = Modifier.weight(1f)
+            ) {
+                items(msgs.reversed()) { m ->
+                    MessageBubble(
+                        message = m,
+                        isMine = m.sender == myId
+                    )
+                }
+            }
+
+            var input by remember { mutableStateOf("") }
+            Row {
+                TextField(
+                    modifier = Modifier.weight(1f),
+                    value = input,
+                    onValueChange = { input = it },
+                    placeholder = { Text("Сообщение") }
+                )
+                IconButton(onClick = {
+                    if (input.isNotBlank()) {
+                        viewModel.sendMessage(input.trim())
+                        input = ""
+                    }
+                }) {
+                    Icon(Icons.Filled.Send, contentDescription = null)
+                }
             }
         }
     }
