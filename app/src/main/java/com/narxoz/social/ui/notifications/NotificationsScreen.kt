@@ -111,19 +111,11 @@ fun NotificationsScreen(
                                 if (notif.type == "friend_request" && !notif.isRead) {
                                     Row(horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                                         IconButton(onClick = {
-                                            notif.data?.friend?.id?.let {
-                                                vm.respondToFriendRequest(it, true, notif.id)
-                                            }
-                                        }) {
-                                            Icon(Icons.Default.Check, contentDescription = "Accept")
-                                        }
+                                            notif.requestId?.let { vm.respondToFriendRequest(it, true, notif.id) }
+                                        }) { Icon(Icons.Default.Check, null) }
                                         IconButton(onClick = {
-                                            notif.data?.friend?.id?.let {
-                                                vm.respondToFriendRequest(it, false, notif.id)
-                                            }
-                                        }) {
-                                            Icon(Icons.Default.Close, contentDescription = "Decline")
-                                        }
+                                            notif.requestId?.let { vm.respondToFriendRequest(it, false, notif.id) }
+                                        }) { Icon(Icons.Default.Close, null) }
                                     }
                                 } else if (!notif.isRead) {
                                     Badge { }

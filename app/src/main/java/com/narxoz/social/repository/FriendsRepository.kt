@@ -1,5 +1,6 @@
 package com.narxoz.social.repository
 
+import android.util.Log
 import com.narxoz.social.api.RetrofitInstance
 import com.narxoz.social.api.friends.FriendRespondRequest
 import com.narxoz.social.api.friends.FriendsApi
@@ -14,6 +15,8 @@ class FriendsRepository(
         runCatching {
             val action = if (accepted) "accept" else "decline"
             api.respond(id, FriendRespondRequest(action))
+        }.onFailure {
+            Log.e("FriendsRepository", "Respond failed", it)
         }
     suspend fun outgoing() = runCatching { api.outgoing() }
     suspend fun declined() = runCatching { api.declined() }
