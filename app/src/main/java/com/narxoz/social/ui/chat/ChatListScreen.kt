@@ -1,8 +1,6 @@
 package com.narxoz.social.ui.chat
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.*
@@ -11,6 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.narxoz.social.repository.AuthRepository
+import com.narxoz.social.ui.chat.components.ChatRow
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 
@@ -40,15 +39,7 @@ fun ChatListScreen(
         LazyColumn(contentPadding = padding) {
 
             items(chats) { chat ->
-                ListItem(
-                    headlineContent   = { Text(chat.name ?: "Direct") },
-                    supportingContent = { Text("Непрочитано: ${chat.unread}") },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable {
-                            navController.navigate("chat/${chat.id}")
-                        }
-                )
+                ChatRow(chat = chat, navController = navController)
                 Divider()
             }
         }
