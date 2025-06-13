@@ -34,20 +34,18 @@ class NotificationsViewModel(
 
                 val patched = list.map { n ->
                     if (n.type == "friend_request") {
-                        val uid = n.data?.friend?.id
+                        val existingFriend = n.data?.friend
+                        val uid = existingFriend?.id
                         val req = uid?.let { incomingMap[uid] }
                         val name = req?.fromUser?.fullName ?: req?.fromUser?.nickname
                         val reqId = req?.id
 
-                        if (reqId != null || !name.isNullOrBlank()) {
-                            n.copy(
-                                data = n.data?.copy(
-                                    friend = n.data.friend?.copy(
-                                        id = reqId ?: uid,
-                                        nickname = name ?: n.data.friend?.nickname
-                                    )
-                                )
+                        if (existingFriend != null && (reqId != null || !name.isNullOrBlank())) {
+                            val patchedFriend = existingFriend.copy(
+                                id = reqId ?: uid ?: existingFriend.id,
+                                nickname = name ?: existingFriend.nickname
                             )
+                            n.copy(data = n.data.copy(friend = patchedFriend))
                         } else n
                     } else n
                 }
