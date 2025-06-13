@@ -63,8 +63,17 @@ fun MainFeedScreen(
     }
 
     /* -------- Scaffold с единственным BottomBar -------- */
+    val rootNav = LocalNavController.current
+
     Scaffold(
-        topBar = { MainFeedTopBar(onToggleTheme, unread) { innerNav.navigate("notifications") } },
+        topBar = {
+            MainFeedTopBar(
+                onToggleTheme = onToggleTheme,
+                notifications = unread,
+                onNotifications = { innerNav.navigate("notifications") },
+                onProfile = { rootNav.navigate("profile") }
+            )
+        },
         bottomBar = {
             BottomNavBar(
                 currentScreen = currentTab,

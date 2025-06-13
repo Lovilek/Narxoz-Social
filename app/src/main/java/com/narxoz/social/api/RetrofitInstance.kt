@@ -5,6 +5,7 @@ import com.narxoz.social.api.likes.LikesApi
 import com.narxoz.social.api.EventsApi
 import com.narxoz.social.api.NotificationsApi
 import com.narxoz.social.api.friends.FriendsApi
+import com.narxoz.social.api.profile.ProfileApi
 import com.narxoz.social.repository.AuthRepository
 import okhttp3.Interceptor
 import okhttp3.OkHttpClient
@@ -69,5 +70,8 @@ object RetrofitInstance {
     }
     val friendsApi: FriendsApi by lazy {
         retrofit.create(FriendsApi::class.java)
+    }
+    val profileApi: ProfileApi by lazy {
+        retrofit.create(ProfileApi::class.java)
     }
 }
