@@ -11,6 +11,8 @@ import androidx.compose.material.DismissDirection as MaterialDismissDirection
 import androidx.compose.material.DismissValue as MaterialDismissValue
 import androidx.compose.material.rememberDismissState as rememberMaterialDismissState
 import androidx.compose.material3.*
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -73,8 +75,32 @@ fun NotificationsScreen(
 
                     SwipeToDismiss(
                         state = dismissState,
-                        background = {},
-                        directions = setOf(MaterialDismissDirection.EndToStart, MaterialDismissDirection.StartToEnd)
+                        directions = setOf(
+                            MaterialDismissDirection.EndToStart,
+                            MaterialDismissDirection.StartToEnd
+                        ),
+                        background = {
+                            val color by animateColorAsState(
+                                if (dismissState.targetValue == MaterialDismissValue.Default)
+                                    MaterialTheme.colorScheme.surfaceContainerLow
+                                else
+                                    MaterialTheme.colorScheme.primaryContainer
+                            )
+                            val alignment = when (dismissState.dismissDirection) {
+                                MaterialDismissDirection.StartToEnd -> Alignment.CenterStart
+                                MaterialDismissDirection.EndToStart -> Alignment.CenterEnd
+                                null -> Alignment.CenterStart
+                            }
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .background(color)
+                                    .padding(horizontal = 24.dp),
+                                contentAlignment = alignment
+                            ) {
+                                Icon(Icons.Default.Done, contentDescription = null)
+                            }
+                        }
                     ) {
                         ListItem(
                             headlineContent = { Text(notif.text) },
