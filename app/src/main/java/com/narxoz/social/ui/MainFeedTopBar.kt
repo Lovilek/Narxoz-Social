@@ -23,7 +23,8 @@ import com.narxoz.social.R
 fun MainFeedTopBar(
     onToggleTheme: () -> Unit,
     notifications: Int,
-    onNotifications: () -> Unit
+    onNotifications: () -> Unit,
+    onProfile: () -> Unit
 ) {
     TopAppBar(
         title = { Text("Narxoz Social") },
@@ -39,7 +40,7 @@ fun MainFeedTopBar(
                 Icon(icon, contentDescription = "Toggle theme")
             }
             val topIconModifier = Modifier.size(28.dp)
-            IconButton(onClick = { /* TODO: Переход в профиль */ }) {
+            IconButton(onClick = onProfile) {
                 Icon(
                     painter = painterResource(R.drawable.ic_profile),
                     contentDescription = "Profile",
