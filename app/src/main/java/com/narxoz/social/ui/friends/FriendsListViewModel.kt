@@ -18,16 +18,40 @@ class FriendsListViewModel(
 
     init { reload() }
 
+    fun changeTab(tab: FriendsTab) {
+        _state.update { it.copy(tab = tab) }
+    }
+
+    fun updateFilter(text: String) {
+        _state.update { it.copy(filter = text) }
+    }
+
     fun reload() = viewModelScope.launch {
         _state.update { it.copy(isLoading = true, error = null) }
-        repo.list()
-            .onSuccess { list ->
-                _state.update { it.copy(isLoading = false, friends = list) }
-            }
-            .onFailure { e ->
-                _state.update {
-                    it.copy(isLoading = false, error = e.message ?: "Ошибка сети")
-                }
-            }
+        val friends = repo.list()
+        val incoming = repo.incoming()
+        val outgoing = repo.outgoing()
+        val error = friends.exceptionOrNull()?.message
+            ?: incoming.exceptionOrNull()?.message
+            ?: outgoing.exceptionOrNull()?.message
+        _state.update {
+            it.copy(
+                isLoading = false,
+                error = error,
+                friends = friends.getOrElse { emptyList() },
+                incoming = incoming.getOrElse { emptyList() },
+                outgoing = outgoing.getOrElse { emptyList() },
+            )
+        }
+    }
+
+    fun cancelRequest(id: Int) = viewModelScope.launch {
+        repo.cancel(id)
+        reload()
+    }
+
+    fun removeFriend(id: Int) = viewModelScope.launch {
+        repo.remove(id)
+        reload()
     }
 }

@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.viewModelScope
 import com.narxoz.social.repository.ProfileRepository
+import com.narxoz.social.repository.FriendsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -11,7 +12,8 @@ import kotlinx.coroutines.launch
 
 class AnotherProfileViewModel(
     private val userId: Int,
-    private val repo: ProfileRepository = ProfileRepository()
+    private val repo: ProfileRepository = ProfileRepository(),
+    private val friendsRepo: FriendsRepository = FriendsRepository(),
 ) : ViewModel() {
 
     private val _state = MutableStateFlow(AnotherProfileState(isLoading = true))
@@ -21,13 +23,14 @@ class AnotherProfileViewModel(
 
     fun load() = viewModelScope.launch {
         _state.value = AnotherProfileState(isLoading = true)
-        repo.loadById(userId)
-            .onSuccess { prof ->
-                _state.value = AnotherProfileState(profile = prof, isLoading = false)
-            }
-            .onFailure { e ->
-                _state.value = AnotherProfileState(isLoading = false, error = e.message ?: "Ошибка")
-            }
+        val profileRes = repo.loadById(userId)
+        val statusRes = friendsRepo.status(userId)
+        _state.value = AnotherProfileState(
+            profile = profileRes.getOrNull(),
+            friendStatus = statusRes.getOrNull()?.status,
+            isLoading = false,
+            error = profileRes.exceptionOrNull()?.message ?: statusRes.exceptionOrNull()?.message
+        )
     }
 }
 
