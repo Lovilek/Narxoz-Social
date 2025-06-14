@@ -95,10 +95,7 @@ fun FriendsListScreen(
                                 items(friends) { friend ->
                                     ListItem(
                                         headlineContent = {
-                                            Text(
-                                                friend.nickname ?: friend.fullName
-                                                ?: "ID ${'$'}{friend.id}"
-                                            )
+                                            Text(friend.nickname ?: friend.fullName ?: "ID ${friend.id}")
                                         },
                                         trailingContent = {
                                             IconButton(onClick = { vm.removeFriend(friend.id) }) {
@@ -106,7 +103,7 @@ fun FriendsListScreen(
                                             }
                                         },
                                         modifier = Modifier.clickable {
-                                            navController.navigate("user/${'$'}{friend.id}")
+                                            navController.navigate("user/${friend.id}")
                                         }
                                     )
                                     Divider()
@@ -124,10 +121,7 @@ fun FriendsListScreen(
                                     val user = req.fromUser
                                     ListItem(
                                         headlineContent = {
-                                            Text(
-                                                user?.nickname ?: user?.fullName
-                                                ?: "ID ${'$'}{user?.id}"
-                                            )
+                                            Text(user?.nickname ?: user?.fullName ?: "ID ${user?.id}")
                                         }
                                     )
                                     Divider()
@@ -145,10 +139,7 @@ fun FriendsListScreen(
                                     val user = req.toUser
                                     ListItem(
                                         headlineContent = {
-                                            Text(
-                                                user?.nickname ?: user?.fullName
-                                                ?: "ID ${'$'}{user?.id}"
-                                            )
+                                            Text(user?.nickname ?: user?.fullName ?: "ID ${user?.id}")
                                         },
                                         trailingContent = {
                                             IconButton(onClick = { vm.cancelRequest(req.id) }) {
