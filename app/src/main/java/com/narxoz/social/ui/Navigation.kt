@@ -22,6 +22,9 @@ import com.narxoz.social.ui.friends.FriendsListScreen
 import com.narxoz.social.ui.profile.ProfileScreen
 import com.narxoz.social.ui.profile.EditProfileScreen
 import com.narxoz.social.ui.profile.AnotherProfileScreen
+import com.narxoz.social.ui.post.CreatePostScreen
+import com.narxoz.social.ui.post.PostDetailScreen
+import com.narxoz.social.ui.post.EditPostScreen
 
 @Composable
 fun AppNavigation(onToggleTheme: () -> Unit) {
@@ -48,6 +51,30 @@ fun AppNavigation(onToggleTheme: () -> Unit) {
                 PrivacyPolicyScreen(navController, role)
             }
             composable("mainFeed") { MainFeedScreen(onToggleTheme = onToggleTheme) }
+            composable("newPost") {
+                CreatePostScreen(onBack = { navController.popBackStack() })
+            }
+            composable(
+                route = "post/{id}",
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
+            ) { back ->
+                val id = back.arguments!!.getInt("id")
+                PostDetailScreen(
+                    postId = id,
+                    onBack = { navController.popBackStack() },
+                    onEdit = { navController.navigate("editPost/$id") }
+                )
+            }
+            composable(
+                route = "editPost/{id}",
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
+            ) { back ->
+                val id = back.arguments!!.getInt("id")
+                EditPostScreen(
+                    postId = id,
+                    onBack = { navController.popBackStack() }
+                )
+            }
             composable(
                 "comments/{postId}",
                 arguments = listOf(navArgument("postId") { type = NavType.IntType })

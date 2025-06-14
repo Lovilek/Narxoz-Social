@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.WbSunny
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.*
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Badge
@@ -24,7 +25,8 @@ fun MainFeedTopBar(
     onToggleTheme: () -> Unit,
     notifications: Int,
     onNotifications: () -> Unit,
-    onProfile: () -> Unit
+    onProfile: () -> Unit,
+    onCreatePost: () -> Unit = {}
 ) {
     TopAppBar(
         title = { Text("Narxoz Social") },
@@ -46,6 +48,9 @@ fun MainFeedTopBar(
                     contentDescription = "Profile",
                     modifier = topIconModifier
                 )
+            }
+            IconButton(onClick = onCreatePost) {
+                Icon(Icons.Filled.Add, contentDescription = "New post")
             }
             IconButton(onClick = { /* TODO: Календарь/События */ }) {
                 Icon(
