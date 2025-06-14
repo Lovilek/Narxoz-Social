@@ -61,7 +61,7 @@ fun OrganizationsScreen(
                         Modifier
                             .fillMaxWidth()
                             .padding(bottom = 8.dp)
-                            .clickable { navController.navigate("organization/${'$'}{org.id}") },
+                            .clickable { navController.navigate("organization/${org.id}") },
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                         )
