@@ -3,6 +3,7 @@ package com.narxoz.social.ui.friends
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.clickable
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material3.*
@@ -13,6 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.narxoz.social.ui.navigation.LocalNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -21,6 +23,7 @@ fun FriendsListScreen(
     vm: FriendsListViewModel = viewModel(),
 ) {
     val state by vm.state.collectAsState()
+    val navController = LocalNavController.current
 
     Scaffold(
         topBar = {
@@ -60,7 +63,8 @@ fun FriendsListScreen(
                     ListItem(
                         headlineContent = {
                             Text(friend.nickname ?: friend.fullName ?: "ID ${friend.id}")
-                        }
+                        },
+                        modifier = Modifier.clickable { navController.navigate("user/${friend.id}") }
                     )
                     Divider()
                 }
