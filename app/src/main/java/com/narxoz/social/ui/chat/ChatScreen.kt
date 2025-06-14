@@ -94,7 +94,9 @@ private fun MessageBubble(message: com.narxoz.social.network.dto.MessageDto, isM
                         color = MaterialTheme.colorScheme.primary
                     )
                 }
-                Text(message.text)
+                message.text?.let {
+                    Text(it)
+                }
                 message.createdAt?.let {
                     Text(
                         text = it,

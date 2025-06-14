@@ -15,8 +15,8 @@ fun ChatRow(chat: ChatShortDto, navController: NavController) {
     ListItem(
         headlineContent = { Text(chat.name ?: "") },
         supportingContent = {
-            chat.lastMessage?.let { msg ->
-                Text(msg.text, maxLines = 1)
+            chat.lastMessage?.text?.let {
+                Text(it, maxLines = 1)
             }
         },
         trailingContent = {
