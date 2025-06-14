@@ -23,7 +23,7 @@ android {
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
         /** ↓ базовый URL для WebSocket будет доступен как BuildConfig.BASE_WS_URL  */
-        buildConfigField("String", "BASE_WS_URL", "\"ws://159.65.124.242:8000\"")
+        buildConfigField("String", "BASE_WS_URL", "\"ws://159.65.124.242:8000/\"")
     }
 
     buildTypes {

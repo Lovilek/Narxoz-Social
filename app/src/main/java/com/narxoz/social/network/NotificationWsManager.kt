@@ -25,7 +25,7 @@ object NotificationWsManager {
         lastJwt = jwt
         lastListener = listener
         val req = Request.Builder()
-            .url("${BuildConfig.BASE_WS_URL}/ws/notify/?token=$jwt")
+            .url("${BuildConfig.BASE_WS_URL}ws/notify/?token=$jwt")
             .build()
         webSocket = okHttp.newWebSocket(req, object : WebSocketListener() {
             override fun onFailure(ws: WebSocket, t: Throwable, response: Response?) {
