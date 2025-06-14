@@ -20,6 +20,7 @@ import com.narxoz.social.ui.notifications.NotificationsScreen
 import com.narxoz.social.ui.friends.AddFriendScreen
 import com.narxoz.social.ui.friends.FriendsListScreen
 import com.narxoz.social.ui.profile.ProfileScreen
+import com.narxoz.social.ui.profile.EditProfileScreen
 
 @Composable
 fun AppNavigation(onToggleTheme: () -> Unit) {
@@ -79,7 +80,13 @@ fun AppNavigation(onToggleTheme: () -> Unit) {
                 FriendsListScreen(onBack = { navController.popBackStack() })
             }
             composable("profile") {
-                ProfileScreen(onBack = { navController.popBackStack() })
+                ProfileScreen(
+                    onBack = { navController.popBackStack() },
+                    onEdit = { navController.navigate("editProfile") }
+                )
+            }
+            composable("editProfile") {
+                EditProfileScreen(onBack = { navController.popBackStack() })
             }
         }
     }

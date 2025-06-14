@@ -3,6 +3,7 @@ package com.narxoz.social.ui.profile
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.narxoz.social.repository.ProfileRepository
+import java.io.File
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -24,6 +25,17 @@ class ProfileViewModel(
             }
             .onFailure { e ->
                 _state.value = ProfileState(isLoading = false, error = e.message ?: "Ошибка")
+            }
+    }
+
+    fun update(nickname: String?, avatar: File?) = viewModelScope.launch {
+        _state.value = _state.value.copy(isLoading = true, error = null)
+        repo.update(nickname, avatar)
+            .onSuccess { prof ->
+                _state.value = ProfileState(profile = prof, isLoading = false)
+            }
+            .onFailure { e ->
+                _state.value = _state.value.copy(isLoading = false, error = e.message ?: "Ошибка")
             }
     }
 }
