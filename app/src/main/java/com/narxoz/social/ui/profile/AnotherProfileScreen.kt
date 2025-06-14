@@ -59,7 +59,7 @@ private fun AnotherProfileContent(state: AnotherProfileState) {
         )
     }
     Text(
-        profile.fullName ?: profile.nickname ?: "ID ${'$'}{profile.id}",
+        profile.fullName ?: profile.nickname ?: "ID ${profile.id}",
         style = MaterialTheme.typography.headlineSmall
     )
     state.friendStatus?.let { status ->

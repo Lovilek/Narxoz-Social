@@ -19,7 +19,7 @@ class FCMService : FirebaseMessagingService() {
 
     override fun onMessageReceived(message: RemoteMessage) {
         super.onMessageReceived(message)
-        Log.d("FCMService", "Message: ${'$'}{message.data}")
+        Log.d("FCMService", "Message: ${message.data}")
         showNotification(message)
     }
 
