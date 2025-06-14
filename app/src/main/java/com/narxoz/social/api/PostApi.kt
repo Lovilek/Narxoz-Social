@@ -4,6 +4,9 @@ import okhttp3.MultipartBody
 import retrofit2.Response
 import retrofit2.http.*
 
+
+/** API for working with posts. */
+
 interface PostApi {
     @GET("api/posts/{id}/")
     suspend fun getPost(@Path("id") id: Int): PostDto
@@ -24,6 +27,10 @@ interface PostApi {
     @DELETE("api/posts/{id}/")
     suspend fun deletePost(@Path("id") id: Int): Response<Unit>
 
+    /**
+     * Returns the current user's posts. The backend wraps the list
+     * of posts into a paginated response, so we return [PagedPostsDto].
+     */
     @GET("api/posts/user/")
-    suspend fun myPosts(): List<PostDto>
+    suspend fun myPosts(): PagedPostsDto
 }
