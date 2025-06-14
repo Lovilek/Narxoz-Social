@@ -5,6 +5,7 @@ import com.narxoz.social.api.profile.AnotherUserProfileDto
 /** Состояние экрана чужого профиля. */
 data class AnotherProfileState(
     val profile: AnotherUserProfileDto? = null,
+    val friendStatus: String? = null,
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
 )
