@@ -71,7 +71,8 @@ fun MainFeedScreen(
                 onToggleTheme = onToggleTheme,
                 notifications = unread,
                 onNotifications = { innerNav.navigate("notifications") },
-                onProfile = { rootNav.navigate("profile") }
+                onProfile = { rootNav.navigate("profile") },
+                onCreatePost = { rootNav.navigate("newPost") }
             )
         },
         bottomBar = {

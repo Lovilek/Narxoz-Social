@@ -42,7 +42,8 @@ fun PostCard(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .wrapContentHeight(),
+            .wrapContentHeight()
+            .clickable { navController.navigate("post/${post.id}") },
 
         colors = CardDefaults.cardColors(containerColor = cardColor),
         elevation = CardDefaults.cardElevation(2.dp),
