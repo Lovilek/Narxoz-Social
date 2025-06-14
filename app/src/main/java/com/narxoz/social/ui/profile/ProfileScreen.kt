@@ -16,7 +16,11 @@ import coil.compose.AsyncImage
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun ProfileScreen(onBack: () -> Unit = {}, onEdit: () -> Unit = {}) {
+fun ProfileScreen(
+    onBack: () -> Unit = {},
+    onEdit: () -> Unit = {},
+    onMyPosts: () -> Unit = {}
+) {
     val vm: ProfileViewModel = viewModel()
     val state by vm.state.collectAsState()
 
@@ -48,14 +52,14 @@ fun ProfileScreen(onBack: () -> Unit = {}, onEdit: () -> Unit = {}) {
             when {
                 state.isLoading -> CircularProgressIndicator()
                 state.error != null -> Text(state.error!!, color = MaterialTheme.colorScheme.error)
-                state.profile != null -> ProfileContent(state)
+                state.profile != null -> ProfileContent(state, onMyPosts)
             }
         }
     }
 }
 
 @Composable
-private fun ProfileContent(state: ProfileState) {
+private fun ProfileContent(state: ProfileState, onMyPosts: () -> Unit) {
     val profile = state.profile ?: return
     profile.avatarPath?.let { url ->
         AsyncImage(
@@ -71,4 +75,5 @@ private fun ProfileContent(state: ProfileState) {
     if (!profile.email.isNullOrBlank()) {
         Text(profile.email!!, style = MaterialTheme.typography.bodyMedium)
     }
+    Button(onClick = onMyPosts) { Text("Мои посты") }
 }

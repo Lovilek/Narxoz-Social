@@ -23,4 +23,7 @@ interface PostApi {
 
     @DELETE("api/posts/{id}/")
     suspend fun deletePost(@Path("id") id: Int): Response<Unit>
+
+    @GET("api/posts/my/")
+    suspend fun myPosts(): List<PostDto>
 }

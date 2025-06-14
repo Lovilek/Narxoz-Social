@@ -25,6 +25,7 @@ import com.narxoz.social.ui.profile.AnotherProfileScreen
 import com.narxoz.social.ui.post.CreatePostScreen
 import com.narxoz.social.ui.post.PostDetailScreen
 import com.narxoz.social.ui.post.EditPostScreen
+import com.narxoz.social.ui.myposts.MyPostsScreen
 
 @Composable
 fun AppNavigation(onToggleTheme: () -> Unit) {
@@ -120,8 +121,12 @@ fun AppNavigation(onToggleTheme: () -> Unit) {
             composable("profile") {
                 ProfileScreen(
                     onBack = { navController.popBackStack() },
-                    onEdit = { navController.navigate("editProfile") }
+                    onEdit = { navController.navigate("editProfile") },
+                    onMyPosts = { navController.navigate("myPosts") }
                 )
+            }
+            composable("myPosts") {
+                MyPostsScreen(onBack = { navController.popBackStack() })
             }
             composable("editProfile") {
                 EditProfileScreen(onBack = { navController.popBackStack() })

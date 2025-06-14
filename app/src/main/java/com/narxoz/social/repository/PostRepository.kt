@@ -42,4 +42,7 @@ class PostRepository(
             val resp = api.deletePost(id)
             if (!resp.isSuccessful) throw HttpException(resp)
         }
+
+    suspend fun myPosts(): Result<List<PostDto>> =
+        runCatching { api.myPosts() }
 }
