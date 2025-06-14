@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">NarxozSocial</string>
+    <string name="privacy_title">Құпиялылық саясаты</string>
+    <string name="accept">Қабылдау</string>
+    <string name="settings_title">Баптаулар</string>
+    <string name="settings_hint">Тақырып, хабарламалар, қолданба туралы…</string>
+    <string name="settings_language">Тіл</string>
+    <string name="settings_notifications">Хабарламалар</string>
+    <string name="settings_privacy">Жеке аккаунт</string>
+    <string name="logout">Шығу</string>
+    <string name="lang_en">Ағылшын</string>
+    <string name="lang_ru">Орыс</string>
+    <string name="lang_kk">Қазақ</string>
+    <string name="my_friends">Менің достарым</string>
+    <string name="add_friend">Дос қосу</string>
+    <string name="user_id">Пайдаланушы ID</string>
+    <string name="request_sent">Сұрау жіберілді</string>
+    <string name="send">Жіберу</string>
+    <string name="home">Басты</string>
+    <string name="events">Оқиғалар</string>
+    <string name="chats">Чаттар</string>
+    <string name="orgs">Ұйымдар</string>
+    <string name="settings">Баптаулар</string>
+    <string name="friends_tab">Достар</string>
+    <string name="incoming_tab">Кіріс</string>
+    <string name="outgoing_tab">Шығыс</string>
+    <string name="filter">Сүзгі</string>
+    <string name="notifications_title">Хабарламалар</string>
+</resources>

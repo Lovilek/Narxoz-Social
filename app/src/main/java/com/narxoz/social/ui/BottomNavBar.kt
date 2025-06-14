@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import com.narxoz.social.R
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.Icons
@@ -33,11 +34,11 @@ fun BottomNavBar(
             icon = {
                 Icon(
                     painter = painterResource(R.drawable.ic_home),
-                    contentDescription = "Home",
+                    contentDescription = stringResource(R.string.home),
                     modifier = navIconModifier
                 )
             },
-            label  = { Text("Home") },
+            label  = { Text(stringResource(R.string.home)) },
             colors = NavigationBarItemDefaults.colors(          // ← готовые дефолты M3
                 selectedIconColor   = MaterialTheme.colorScheme.primary,
                 selectedTextColor   = MaterialTheme.colorScheme.primary,
@@ -53,11 +54,11 @@ fun BottomNavBar(
             icon = {
                 Icon(
                     painter = painterResource(R.drawable.ic_events),
-                    contentDescription = "Events",
+                    contentDescription = stringResource(R.string.events),
                     modifier = navIconModifier
                 )
             },
-            label  = { Text("Events") },
+            label  = { Text(stringResource(R.string.events)) },
             colors = NavigationBarItemDefaults.colors(          // ← готовые дефолты M3
                 selectedIconColor   = MaterialTheme.colorScheme.primary,
                 selectedTextColor   = MaterialTheme.colorScheme.primary,
@@ -76,19 +77,19 @@ fun BottomNavBar(
                     BadgedBox(badge = { Badge { Text(unreadChats.toString()) } }) {
                         Icon(
                             painter = painterResource(R.drawable.ic_chat),
-                            contentDescription = "Chats",
+                            contentDescription = stringResource(R.string.chats),
                             modifier = navIconModifier
                         )
                     }
                 } else {
                     Icon(
                         painter = painterResource(R.drawable.ic_chat),
-                        contentDescription = "Chats",
+                        contentDescription = stringResource(R.string.chats),
                         modifier = navIconModifier
                     )
                 }
             },
-            label  = { Text("Chats") },
+            label  = { Text(stringResource(R.string.chats)) },
             colors = itemColors()
         )
 
@@ -98,11 +99,11 @@ fun BottomNavBar(
             icon = {
                 Icon(
                     Icons.Filled.People,
-                    contentDescription = "Orgs",
+                    contentDescription = stringResource(R.string.orgs),
                     modifier = navIconModifier
                 )
             },
-            label  = { Text("Orgs") },
+            label  = { Text(stringResource(R.string.orgs)) },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor   = MaterialTheme.colorScheme.primary,
                 selectedTextColor   = MaterialTheme.colorScheme.primary,
@@ -118,11 +119,11 @@ fun BottomNavBar(
             icon = {
                 Icon(
                     painter = painterResource(R.drawable.ic_settings),
-                    contentDescription = "Settings",
+                    contentDescription = stringResource(R.string.settings),
                     modifier = navIconModifier
                 )
             },
-            label  = { Text("Settings") },
+            label  = { Text(stringResource(R.string.settings)) },
             colors = NavigationBarItemDefaults.colors(          // ← готовые дефолты M3
                 selectedIconColor   = MaterialTheme.colorScheme.primary,
                 selectedTextColor   = MaterialTheme.colorScheme.primary,

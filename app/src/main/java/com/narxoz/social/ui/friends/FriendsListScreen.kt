@@ -14,6 +14,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.narxoz.social.ui.navigation.LocalNavController
@@ -30,7 +31,7 @@ fun FriendsListScreen(
     Scaffold(
         topBar = {
             SmallTopAppBar(
-                title = { Text("Мои друзья") },
+                title = { Text(stringResource(R.string.my_friends)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = null)
@@ -46,17 +47,17 @@ fun FriendsListScreen(
         ) {
             ScrollableTabRow(selectedTabIndex = state.tab.ordinal) {
                 Tab(
-                    text = { Text("Друзья") },
+                    text = { Text(stringResource(R.string.friends_tab)) },
                     selected = state.tab == FriendsTab.FRIENDS,
                     onClick = { vm.changeTab(FriendsTab.FRIENDS) }
                 )
                 Tab(
-                    text = { Text("Входящие") },
+                    text = { Text(stringResource(R.string.incoming_tab)) },
                     selected = state.tab == FriendsTab.INCOMING,
                     onClick = { vm.changeTab(FriendsTab.INCOMING) }
                 )
                 Tab(
-                    text = { Text("Исходящие") },
+                    text = { Text(stringResource(R.string.outgoing_tab)) },
                     selected = state.tab == FriendsTab.OUTGOING,
                     onClick = { vm.changeTab(FriendsTab.OUTGOING) }
                 )
@@ -64,7 +65,7 @@ fun FriendsListScreen(
             OutlinedTextField(
                 value = state.filter,
                 onValueChange = vm::updateFilter,
-                label = { Text("Фильтр") },
+                label = { Text(stringResource(R.string.filter)) },
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(8.dp)

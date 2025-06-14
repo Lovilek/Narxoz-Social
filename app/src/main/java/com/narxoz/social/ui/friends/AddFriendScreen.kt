@@ -9,6 +9,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 
@@ -23,7 +24,7 @@ fun AddFriendScreen(
     Scaffold(
         topBar = {
             SmallTopAppBar(
-                title = { Text("Добавить друга") },
+                title = { Text(stringResource(R.string.add_friend)) },
                 navigationIcon = {
                     IconButton(onClick = onBack) {
                         Icon(Icons.Default.ArrowBack, contentDescription = null)
@@ -43,14 +44,14 @@ fun AddFriendScreen(
             OutlinedTextField(
                 value = state.idInput,
                 onValueChange = vm::updateInput,
-                label = { Text("ID пользователя") },
+                label = { Text(stringResource(R.string.user_id)) },
                 modifier = Modifier.fillMaxWidth()
             )
             if (state.error != null) {
                 Text(state.error!!, color = MaterialTheme.colorScheme.error)
             }
             if (state.success) {
-                Text("Заявка отправлена", color = MaterialTheme.colorScheme.primary)
+                Text(stringResource(R.string.request_sent), color = MaterialTheme.colorScheme.primary)
             }
             Button(
                 onClick = vm::sendRequest,
@@ -62,7 +63,7 @@ fun AddFriendScreen(
                         modifier = Modifier.size(16.dp)
                     )
                 } else {
-                    Text("Отправить")
+                    Text(stringResource(R.string.send))
                 }
             }
         }
