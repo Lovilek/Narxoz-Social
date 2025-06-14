@@ -81,58 +81,83 @@ fun FriendsListScreen(
                 ) { Text(state.error ?: "", color = MaterialTheme.colorScheme.error) }
 
                 else -> {
-                    val list = when (state.tab) {
-                        FriendsTab.FRIENDS -> state.friends.filter {
-                            it.nickname?.contains(state.filter, true) == true ||
-                                    it.fullName?.contains(state.filter, true) == true
+                    when (state.tab) {
+                        FriendsTab.FRIENDS -> {
+                            val friends = state.friends.filter {
+                                it.nickname?.contains(state.filter, true) == true ||
+                                        it.fullName?.contains(state.filter, true) == true
+                            }
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize(),
+                                contentPadding = PaddingValues(12.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                items(friends) { friend ->
+                                    ListItem(
+                                        headlineContent = {
+                                            Text(
+                                                friend.nickname ?: friend.fullName
+                                                ?: "ID ${'$'}{friend.id}"
+                                            )
+                                        },
+                                        trailingContent = {
+                                            IconButton(onClick = { vm.removeFriend(friend.id) }) {
+                                                Icon(Icons.Default.Delete, null)
+                                            }
+                                        },
+                                        modifier = Modifier.clickable {
+                                            navController.navigate("user/${'$'}{friend.id}")
+                                        }
+                                    )
+                                    Divider()
+                                }
+                            }
                         }
-                        FriendsTab.INCOMING -> state.incoming
-                        FriendsTab.OUTGOING -> state.outgoing
-                    }
-                    LazyColumn(
-                        modifier = Modifier.fillMaxSize(),
-                        contentPadding = PaddingValues(12.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        when (state.tab) {
-                            FriendsTab.FRIENDS -> items(list) { friend ->
-                                ListItem(
-                                    headlineContent = {
-                                        Text(friend.nickname ?: friend.fullName ?: "ID ${'$'}{friend.id}")
-                                    },
-                                    trailingContent = {
-                                        IconButton(onClick = { vm.removeFriend(friend.id) }) {
-                                            Icon(Icons.Default.Delete, null)
+
+                        FriendsTab.INCOMING -> {
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize(),
+                                contentPadding = PaddingValues(12.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                items(state.incoming) { req ->
+                                    val user = req.fromUser
+                                    ListItem(
+                                        headlineContent = {
+                                            Text(
+                                                user?.nickname ?: user?.fullName
+                                                ?: "ID ${'$'}{user?.id}"
+                                            )
                                         }
-                                    },
-                                    modifier = Modifier.clickable {
-                                        navController.navigate("user/${'$'}{friend.id}")
-                                    }
-                                )
-                                Divider()
+                                    )
+                                    Divider()
+                                }
                             }
-                            FriendsTab.INCOMING -> items(list) { req ->
-                                val user = req.fromUser
-                                ListItem(
-                                    headlineContent = {
-                                        Text(user?.nickname ?: user?.fullName ?: "ID ${'$'}{user?.id}")
-                                    }
-                                )
-                                Divider()
-                            }
-                            FriendsTab.OUTGOING -> items(list) { req ->
-                                val user = req.toUser
-                                ListItem(
-                                    headlineContent = {
-                                        Text(user?.nickname ?: user?.fullName ?: "ID ${'$'}{user?.id}")
-                                    },
-                                    trailingContent = {
-                                        IconButton(onClick = { vm.cancelRequest(req.id) }) {
-                                            Icon(Icons.Default.Cancel, null)
+                        }
+
+                        FriendsTab.OUTGOING -> {
+                            LazyColumn(
+                                modifier = Modifier.fillMaxSize(),
+                                contentPadding = PaddingValues(12.dp),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                items(state.outgoing) { req ->
+                                    val user = req.toUser
+                                    ListItem(
+                                        headlineContent = {
+                                            Text(
+                                                user?.nickname ?: user?.fullName
+                                                ?: "ID ${'$'}{user?.id}"
+                                            )
+                                        },
+                                        trailingContent = {
+                                            IconButton(onClick = { vm.cancelRequest(req.id) }) {
+                                                Icon(Icons.Default.Cancel, null)
+                                            }
                                         }
-                                    }
-                                )
-                                Divider()
+                                    )
+                                    Divider()
+                                }
                             }
                         }
                     }
