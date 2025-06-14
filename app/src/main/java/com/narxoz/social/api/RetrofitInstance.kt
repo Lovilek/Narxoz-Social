@@ -16,7 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 object RetrofitInstance {
 
-    private const val BASE_URL = "http://10.0.2.2:8000/"
+    private const val BASE_URL = "http://159.65.124.242:8000/"
     lateinit var appPrefs: SharedPreferences
 
     /** Подставляем токен, кроме login/refresh/register */

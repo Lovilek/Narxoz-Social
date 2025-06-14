@@ -29,7 +29,7 @@ class PostDetailViewModel(
                     id = dto.id.toInt(),
                     author = dto.author,
                     content = dto.content,
-                    imageUrl = dto.images.firstOrNull()?.imagePath?.replace("127.0.0.1", "10.0.2.2"),
+                    imageUrl = dto.images.firstOrNull()?.imagePath?.replace("127.0.0.1", "159.65.124.242"),
                     likes = dto.likes,
                     likedByMe = dto.isLiked
                 )

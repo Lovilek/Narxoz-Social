@@ -73,7 +73,7 @@ class FeedViewModel(app: Application) : AndroidViewModel(app) {
                     content = dto.content,
                     imageUrl = dto.images.firstOrNull()
                         ?.imagePath
-                        ?.replace("127.0.0.1", "10.0.2.2"),
+                        ?.replace("127.0.0.1", "159.65.124.242"),
                     likes = dto.likes,
                     likedByMe = dto.isLiked
                 )
@@ -133,7 +133,7 @@ class FeedViewModel(app: Application) : AndroidViewModel(app) {
                     // берём Bitmap через Coil-ImageLoader
                     val loader = ImageLoader(ctx)
                     val req = ImageRequest.Builder(ctx)
-                        .data(url.replace("127.0.0.1", "10.0.2.2"))
+                        .data(url.replace("127.0.0.1", "159.65.124.242"))
                         .allowHardware(false)
                         .build()
                     val drawable = (loader.execute(req).drawable) ?: return@let null
