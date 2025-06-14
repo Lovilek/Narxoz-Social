@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">NarxozSocial</string>
+    <string name="privacy_title">Политика конфиденциальности</string>
+    <string name="accept">Принять</string>
+    <string name="settings_title">Настройки</string>
+    <string name="settings_hint">Тема, уведомления, о приложении…</string>
+    <string name="settings_language">Язык</string>
+    <string name="settings_notifications">Уведомления</string>
+    <string name="settings_privacy">Приватный аккаунт</string>
+    <string name="logout">Выйти из аккаунта</string>
+    <string name="lang_en">Английский</string>
+    <string name="lang_ru">Русский</string>
+    <string name="lang_kk">Казахский</string>
+    <string name="my_friends">Мои друзья</string>
+    <string name="add_friend">Добавить друга</string>
+    <string name="user_id">ID пользователя</string>
+    <string name="request_sent">Заявка отправлена</string>
+    <string name="send">Отправить</string>
+    <string name="home">Главная</string>
+    <string name="events">События</string>
+    <string name="chats">Чаты</string>
+    <string name="orgs">Орги</string>
+    <string name="settings">Настройки</string>
+    <string name="friends_tab">Друзья</string>
+    <string name="incoming_tab">Входящие</string>
+    <string name="outgoing_tab">Исходящие</string>
+    <string name="filter">Фильтр</string>
+    <string name="notifications_title">Уведомления</string>
+</resources>
