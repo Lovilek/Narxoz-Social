@@ -13,7 +13,7 @@ data class MessageDto(
     @Json(name = "sender_id")
     val sender: Int = 0,
 
-    val text: String = "",
+    val text: String? = null,
 
     @Json(name = "created_at")
     val createdAt: String? = null
