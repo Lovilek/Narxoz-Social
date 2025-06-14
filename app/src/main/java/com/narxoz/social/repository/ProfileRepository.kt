@@ -3,6 +3,7 @@ package com.narxoz.social.repository
 import com.narxoz.social.api.RetrofitInstance
 import com.narxoz.social.api.profile.ProfileApi
 import com.narxoz.social.api.profile.UserProfileDto
+import com.narxoz.social.api.profile.AnotherUserProfileDto
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -16,6 +17,10 @@ class ProfileRepository(
 ) {
     suspend fun load(): Result<UserProfileDto> = withContext(Dispatchers.IO) {
         runCatching { api.getProfile() }
+    }
+
+    suspend fun loadById(id: Int): Result<AnotherUserProfileDto> = withContext(Dispatchers.IO) {
+        runCatching { api.getProfileById(id) }
     }
 
     suspend fun update(nickname: String?, avatar: File?): Result<UserProfileDto> =

@@ -21,6 +21,7 @@ import com.narxoz.social.ui.friends.AddFriendScreen
 import com.narxoz.social.ui.friends.FriendsListScreen
 import com.narxoz.social.ui.profile.ProfileScreen
 import com.narxoz.social.ui.profile.EditProfileScreen
+import com.narxoz.social.ui.profile.AnotherProfileScreen
 
 @Composable
 fun AppNavigation(onToggleTheme: () -> Unit) {
@@ -78,6 +79,16 @@ fun AppNavigation(onToggleTheme: () -> Unit) {
             }
             composable("friends") {
                 FriendsListScreen(onBack = { navController.popBackStack() })
+            }
+            composable(
+                route = "user/{id}",
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
+            ) { backStack ->
+                val id = backStack.arguments!!.getInt("id")
+                AnotherProfileScreen(
+                    userId = id,
+                    onBack = { navController.popBackStack() }
+                )
             }
             composable("profile") {
                 ProfileScreen(

@@ -7,6 +7,7 @@ import retrofit2.http.GET
 import retrofit2.http.Multipart
 import retrofit2.http.PATCH
 import retrofit2.http.Part
+import retrofit2.http.Path
 
 /** DTO профиля пользователя. */
 data class UserProfileDto(
@@ -21,6 +22,10 @@ interface ProfileApi {
     /** Возвращает профиль текущего пользователя. */
     @GET("api/users/profile/")
     suspend fun getProfile(): UserProfileDto
+
+    /** Возвращает профиль другого пользователя по ID. */
+    @GET("api/users/profile/{id}/")
+    suspend fun getProfileById(@Path("id") id: Int): AnotherUserProfileDto
 
     /** Обновить профиль пользователя (nickname и аватар). */
     @Multipart
