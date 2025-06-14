@@ -10,7 +10,7 @@ import retrofit2.HttpException
 import java.io.File
 
 class PostRepository(
-    private val api: PostApi = RetrofitInstance.retrofit.create(PostApi::class.java)
+    private val api: PostApi = RetrofitInstance.postApi
 ) {
     suspend fun get(id: Int): Result<PostDto> =
         runCatching { api.getPost(id) }
