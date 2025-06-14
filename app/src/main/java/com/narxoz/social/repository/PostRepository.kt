@@ -44,5 +44,5 @@ class PostRepository(
         }
 
     suspend fun myPosts(): Result<List<PostDto>> =
-        runCatching { api.myPosts() }
+        runCatching { api.myPosts().results }
 }
