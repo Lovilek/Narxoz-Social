@@ -106,7 +106,7 @@ docker-compose up -d
 
 (если настроена конфигурация Docker; иначе запустите Django сервер командой python manage.py runserver 0.0.0.0:8000).
 
-Убедитесь, что WebSocket-сервер (Django Channels или аналог) запущен на ws://localhost:8000/ws/....
+Убедитесь, что WebSocket-сервер (Django Channels или аналог) запущен на ws://159.65.124.242:8000/ws/....
 
 Проверьте, что при авторизации и попытке отправки сообщений сервер отвечает корректно.
 
@@ -343,9 +343,9 @@ daphne narxoz_social.asgi:application --port 8000
 
 После запуска сервера WebSocket должен быть доступен по адресу:
 
-ws://localhost:8000/ws/chat/<chat_id>/
+ws://159.65.124.242:8000/ws/chat/<chat_id>/
 
-В мобильном приложении BuildConfig.BASE_WS_URL должен указывать на ws://<IP_Бэкенда>:8000/ws/chat/.
+В мобильном приложении BuildConfig.BASE_WS_URL должен указывать на этот же адрес.
 
 Советы по отладке
 Ошибка зависимостей Compose
