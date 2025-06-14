@@ -27,7 +27,7 @@ class EditPostViewModel(
             .onSuccess { dto ->
                 _state.value = EditPostState(
                     content = dto.content,
-                    images = dto.images.map { Uri.parse(it.imagePath.replace("127.0.0.1", "10.0.2.2")) }
+                    images = dto.images.map { Uri.parse(it.imagePath.replace("127.0.0.1", "159.65.124.242")) }
                 )
             }
             .onFailure { e ->

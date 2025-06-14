@@ -63,7 +63,7 @@ fun OrganizationDetailScreen(
                     val prof = state.profile
                     prof?.avatarPath?.let { url ->
                         AsyncImage(
-                            model = url.replace("127.0.0.1", "10.0.2.2"),
+                            model = url.replace("127.0.0.1", "159.65.124.242"),
                             contentDescription = null,
                             modifier = Modifier.size(120.dp)
                         )

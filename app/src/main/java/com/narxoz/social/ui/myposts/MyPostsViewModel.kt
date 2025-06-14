@@ -42,7 +42,7 @@ class MyPostsViewModel(app: Application) : AndroidViewModel(app) {
                         id = dto.id.toInt(),
                         author = dto.author,
                         content = dto.content,
-                        imageUrl = dto.images.firstOrNull()?.imagePath?.replace("127.0.0.1", "10.0.2.2"),
+                        imageUrl = dto.images.firstOrNull()?.imagePath?.replace("127.0.0.1", "159.65.124.242"),
                         likes = dto.likes,
                         likedByMe = dto.isLiked
                     )
@@ -88,7 +88,7 @@ class MyPostsViewModel(app: Application) : AndroidViewModel(app) {
                 try {
                     val loader = ImageLoader(ctx)
                     val req = ImageRequest.Builder(ctx)
-                        .data(url.replace("127.0.0.1", "10.0.2.2"))
+                        .data(url.replace("127.0.0.1", "159.65.124.242"))
                         .allowHardware(false)
                         .build()
                     val drawable = (loader.execute(req).drawable) ?: return@let null
