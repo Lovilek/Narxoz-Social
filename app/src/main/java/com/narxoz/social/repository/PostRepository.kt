@@ -5,7 +5,6 @@ import com.narxoz.social.api.PostDto
 import com.narxoz.social.api.RetrofitInstance
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
-import okhttp3.RequestBody
 import okhttp3.RequestBody.Companion.asRequestBody
 import retrofit2.HttpException
 import java.io.File
@@ -18,22 +17,24 @@ class PostRepository(
 
     suspend fun create(content: String, images: List<File>): Result<PostDto> =
         runCatching {
-            val contentPart = RequestBody.create("text/plain".toMediaTypeOrNull(), content)
-            val imageParts = images.map { file ->
+            val post = api.createPost(mapOf("content" to content))
+            images.forEach { file ->
                 val req = file.asRequestBody("image/*".toMediaTypeOrNull())
-                MultipartBody.Part.createFormData("images", file.name, req)
+                val part = MultipartBody.Part.createFormData("image_path", file.name, req)
+                api.uploadImage(post.id.toInt(), part)
             }
-            api.createPost(contentPart, imageParts)
+            api.getPost(post.id.toInt())
         }
 
     suspend fun update(id: Int, content: String, images: List<File>): Result<PostDto> =
         runCatching {
-            val contentPart = RequestBody.create("text/plain".toMediaTypeOrNull(), content)
-            val imageParts = images.map { file ->
+            api.updatePost(id, mapOf("content" to content))
+            images.forEach { file ->
                 val req = file.asRequestBody("image/*".toMediaTypeOrNull())
-                MultipartBody.Part.createFormData("images", file.name, req)
+                val part = MultipartBody.Part.createFormData("image_path", file.name, req)
+                api.uploadImage(id, part)
             }
-            api.updatePost(id, contentPart, imageParts)
+            api.getPost(id)
         }
 
     suspend fun delete(id: Int): Result<Unit> =
