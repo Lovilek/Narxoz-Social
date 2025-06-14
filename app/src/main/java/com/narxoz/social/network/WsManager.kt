@@ -27,7 +27,7 @@ object WsManager {
         lastListener = listener
 
         val req = Request.Builder()
-            .url("${BuildConfig.BASE_WS_URL}/ws/chat/$chatId/?token=$jwt")
+            .url("${BuildConfig.BASE_WS_URL}ws/chat/$chatId/?token=$jwt")
             .build()
         webSocket = okHttp.newWebSocket(req, object : WebSocketListener() {
             override fun onFailure(ws: WebSocket, t: Throwable, response: Response?) {
