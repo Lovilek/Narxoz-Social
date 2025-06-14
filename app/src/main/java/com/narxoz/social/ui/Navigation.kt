@@ -22,6 +22,7 @@ import com.narxoz.social.ui.friends.FriendsListScreen
 import com.narxoz.social.ui.profile.ProfileScreen
 import com.narxoz.social.ui.profile.EditProfileScreen
 import com.narxoz.social.ui.profile.AnotherProfileScreen
+import com.narxoz.social.ui.orgs.OrganizationDetailScreen
 import com.narxoz.social.ui.post.CreatePostScreen
 import com.narxoz.social.ui.post.PostDetailScreen
 import com.narxoz.social.ui.post.EditPostScreen
@@ -102,6 +103,17 @@ fun AppNavigation(onToggleTheme: () -> Unit) {
             composable("student") { MainFeedScreen(onToggleTheme = onToggleTheme) }
             composable("teacher") { MainFeedScreen(onToggleTheme = onToggleTheme) }
             composable("organizations") { OrganizationsScreen() }
+            composable(
+                route = "organization/{id}",
+                arguments = listOf(navArgument("id") { type = NavType.IntType })
+            ) { backStack ->
+                val id = backStack.arguments!!.getInt("id")
+                OrganizationDetailScreen(
+                    orgId = id,
+                    onBack = { navController.popBackStack() },
+                    onEdit = { navController.navigate("editProfile") }
+                )
+            }
             composable("addFriend") {
                 AddFriendScreen(onBack = { navController.popBackStack() })
             }

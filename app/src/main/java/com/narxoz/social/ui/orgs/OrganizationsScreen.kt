@@ -1,7 +1,9 @@
 package com.narxoz.social.ui.orgs
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
@@ -17,6 +19,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import coil.request.ImageRequest
 import com.narxoz.social.R
+import com.narxoz.social.ui.navigation.LocalNavController
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -24,6 +27,7 @@ fun OrganizationsScreen(
     vm: OrganizationsViewModel = viewModel()
 ) {
     val state by vm.state.collectAsState()
+    val navController = LocalNavController.current
 
     Scaffold(
         topBar = {
@@ -54,7 +58,10 @@ fun OrganizationsScreen(
             ) {
                 items(state.items) { org ->
                     Card(
-                        Modifier.fillMaxWidth().padding(bottom = 8.dp),
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(bottom = 8.dp)
+                            .clickable { navController.navigate("organization/${'$'}{org.id}") },
                         colors = CardDefaults.cardColors(
                             containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                         )
@@ -63,19 +70,26 @@ fun OrganizationsScreen(
                             Modifier
                                 .fillMaxWidth()
                                 .padding(12.dp),
-                            verticalAlignment = Alignment.CenterVertically
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            AsyncImage(
-                                model = org.avatarUrl ?: "",
-                                contentDescription = null,
-                                modifier = Modifier.size(48.dp),
-                                placeholder = painterResource(R.drawable.placeholder),
-                                error       = painterResource(R.drawable.placeholder)
-                            )
-                            Spacer(Modifier.width(12.dp))
-                            Column {
-                                Text(org.title,    style = MaterialTheme.typography.titleMedium)
-                                Text(org.subtitle, style = MaterialTheme.typography.bodySmall)
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                AsyncImage(
+                                    model = org.avatarUrl ?: "",
+                                    contentDescription = null,
+                                    modifier = Modifier.size(48.dp),
+                                    placeholder = painterResource(R.drawable.placeholder),
+                                    error       = painterResource(R.drawable.placeholder)
+                                )
+                                Spacer(Modifier.width(12.dp))
+                                Column {
+                                    Text(org.title,    style = MaterialTheme.typography.titleMedium)
+                                    Text(org.subtitle, style = MaterialTheme.typography.bodySmall)
+                                }
+                            }
+                            val btnText = if (org.joined) "Выйти" else "Вступить"
+                            TextButton(onClick = { if (org.joined) vm.leave(org.id) else vm.join(org.id) }) {
+                                Text(btnText)
                             }
                         }
                     }
